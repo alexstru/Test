@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
-from apps.hello.models import AboutMe
+from apps.hello.models import AboutMe, RequestContent
 
 NORMAL = {
     'first_name': 'Alex',
