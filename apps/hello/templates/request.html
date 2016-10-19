@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block meta_title %}<title id="requests_title">Requests</title>{% endblock meta_title %}
+
+{% block menu %}{% endblock %}
+
+{% block content %}
+
+{% csrf_token %}
+
+<br>
+<div class=" well col-md-8" id="content-column">
+<br>
+
+			<table class="table table-condensed">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Method</th>
+						<th>Url</th>
+						<th>Status Code</th>
+						<th>Date&Time</th>
+					</tr>
+				</thead>
+
+				<tbody>
+
+					{% for i in num %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>GET</td>
+						<td>/request/</td>
+						<td>200</td>
+						<td>October 19, 2016, 09:30 a.m.</td>
+					</tr>
+					{% endfor %}
+
+				</tbody>
+			</table>
+
+</div>
+{% endblock content %}
+
+{% block footer %}Requests{% endblock footer %}
