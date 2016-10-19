@@ -7,6 +7,8 @@
 
 {% block content %}
 
+{% if bio %}
+
 <br><br>
 
 <div class="row bio">
@@ -48,8 +50,15 @@
  </div>
 </div>
 
+{% else %}
 
+<div class="row">
+   <div class="col-md-8 alert alert-warning">
+	 There is no profile in the db<br></div>
+   <div class="col-md-4"></div>
+</div>
 
+{% endif %}
 
 {% endblock content %}
 
