@@ -95,3 +95,15 @@ class TestRequestsDataView(TestCase):
         # check for object_list in context
         self.assertTrue('object_list' in response.context)
         self.assertEqual(len(response.context['object_list']), 10)
+
+    def test_no_entries_requestcontent_in_db(self):
+        """ check correct reaction if there are
+        no requestcontent entries in the db"""
+
+        RequestContent.objects.all().delete()
+        db = RequestContent.objects.all()
+        self.assertEqual(len(db), 0)
+
+        response = self.client.get(reverse('hello:request'))
+        self.assertTrue('There is no entries in the db yet'
+                        in response.content)

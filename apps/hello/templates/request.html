@@ -10,6 +10,8 @@
 
 {% csrf_token %}
 
+{% if object_list %}
+
 <br>
 <div class=" well col-md-8" id="content-column">
 <br>
@@ -41,6 +43,18 @@
 			</table>
 
 </div>
+
+{% else %}
+
+<div class="row">
+   <br><br>
+   <div class="col-md-8 alert alert-warning">
+	 There is no entries in the db yet...<br></div>
+   <div class="col-md-4"></div>
+</div>
+
+{% endif %}
+
 {% endblock content %}
 
 {% block footer %}Requests{% endblock footer %}
