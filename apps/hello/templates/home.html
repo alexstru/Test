@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block meta_title %}<title>Hello app</title>{% endblock meta_title %}
+
+
+{% block content %}
+
+<br><br>
+
+<div class="row bio">
+ <div class="col-md-2 smallcol">First name:</div>
+ <div class="col-md-2">Oleksiy</div> 
+ <div class="col-md-8"><b>Contacts</b></div> 
+</div>
+
+<div class="row bio">
+ <div class="col-md-2 smallcol">Last name:</div>
+ <div class="col-md-2">Strutynskyy</div> 
+ <div class="col-md-2 smallcol">Email:</div>
+ <div class="col-md-6">k6_alexstr@ukr.net</div>
+</div>
+
+<div class="row bio">
+ <div class="col-md-2 smallcol">Date of birth:</div>
+ <div class="col-md-2">May 7, 1979</div> 
+ <div class="col-md-2 smallcol">Jabber:</div>
+ <div class="col-md-6">alexleon@42cc.co</div>
+</div>
+
+<div class="row bio">
+ <div class="col-md-2 smallcol"></div>
+ <div class="col-md-2"></div>
+ <div class="col-md-2 smallcol">Skype:</div>
+ <div class="col-md-6">oleksiy.strutynskyy</div>
+</div>
+
+<div class="row text">
+ <div class="col-md-4">
+    <br><b>Bio:</b><br>
+    <p>I want to be Django developer.<br>
+    Django junior is my first aim.</p>
+ </div>
+
+ <div class="col-md-8">
+    <br><b>Other contacts:</b><br>
+    <p>facebook.com<br>
+    linkedin.com<br>
+    gmail.com</p>
+ </div>
+</div>
+
+
+
+
+{% endblock content %}
+
+
+
+
+
+
