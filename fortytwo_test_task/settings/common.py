@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'fortytwo_test_task.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'alex.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'alexleon.sqlite3'),
     }
 }
 
@@ -130,3 +130,7 @@ TEMPLATE_DIRS = (
 
 # Turn off south during test
 SOUTH_TESTS_MIGRATE = False
+
+FIXTURE_DIRS = (
+    os.path.join(BASE_DIR, 'apps/hello/fixtures'),
+)

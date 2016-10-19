@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from .models import AboutMe
-import json
+from .models import AboutMe, RequestContent
+from django.views.generic import ListView
+from django.core import serializers
 from django.http import HttpResponse
 
 
@@ -10,20 +11,15 @@ def home(request):
     return render(request, 'home.html', {'bio': bio})
 
 
-def hard_coded_requests(request):
-    tentop = ()
-    for i in range(10):
-        tentop += (
-                  {'method': 'GET',
-                   'path': '/request/',
-                   'status_code': '200',
-                   'date': 'October 19, 2016, 09:30 a.m.'},
-                  )
+class RequestsView(ListView):
+    model = RequestContent
+    queryset = RequestContent.objects.order_by('-date')[:10]
+    template_name = 'request.html'
 
-    if request.is_ajax():
-        data = json.dumps(tentop)
-        return HttpResponse(data, content_type='application/json')
+    def get(self, request, **kwargs):
+        if request.is_ajax():
+            self.object_list = self.get_queryset()
+            data = serializers.serialize("json", self.get_queryset())
+            return HttpResponse(data, content_type='application/json')
 
-    return render(request,
-                  'request.html',
-                  {'object_list': tentop})
+        return super(RequestsView, self).get(request, **kwargs)

@@ -1,9 +1,10 @@
 
 from django.conf.urls import patterns, url
+from apps.hello.views import RequestsView
 
 
 urlpatterns = patterns(
     'apps.hello.views',
     url(r'^$', 'home', name='home'),
-    url(r'^request/$', 'hard_coded_requests', name='request'),
+    url(r'^request/$', RequestsView.as_view(), name='request'),
 )
