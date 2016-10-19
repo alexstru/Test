@@ -27,13 +27,13 @@
 
 				<tbody id="requests-content">
 
-					{% for i in num %}
+					{% for request in object_list %}
 					<tr>
 						<td>{{ forloop.counter }}</td>
-						<td>GET</td>
-						<td>/request/</td>
-						<td>200</td>
-						<td>October 19, 2016, 09:30 a.m.</td>
+						<td>{{ request.method }}</td>
+						<td>{{ request.path }}</td>
+						<td>{{ request.status_code }}</td>
+						<td>{{ request.date }}</td>
 					</tr>
 					{% endfor %}
 

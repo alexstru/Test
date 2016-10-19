@@ -3,25 +3,33 @@ var $initTitle = $('title').text();
 var checkReqTmr; // timer for checking request's logs
 var unread = 0;
 
-var content = '';
-for(var num = 1; num <= 10; num++) {
-  content += '<tr><td>' + num + '</td>' + 
-             '<td>GET</td>' +
-             '<td>/request/</td>' + 
-             '<td>200</td>' +
-						 '<td>October 19, 2016, 09:30 a.m.</td></tr>';
-}
 
-function FakeRequests() {
+function JsonRequests() {
+  var currentUrl = location.href;
+
 	$.ajax({
-	url: $(this).attr("href"),
-	cache: false,
-	success: function(data){
-           $('#requests-content').html(content);
-           unread++;
-           $(document).attr("title", "(" + unread + ") unread");
-					 }
-	});
+    type: 'GET',
+    url: currentUrl,
+	  cache: false,
+	  success: function(data){
+               var newContent;
+            
+               for (var i = 1; i <= data.length; i++) 
+                 newContent += '<tr><td>' + i + '</td>' +
+                               '<td>' + data[i-1].method + '</td>' +
+                               '<td>' + data[i-1].path + '</td>' +
+                               '<td>' + data[i-1].status_code + '</td>' +
+                               '<td>' + data[i-1].date + '</td></tr>';
+               
+               $('#requests-content').html(newContent);
+               unread++;
+               $(document).attr("title", "(" + unread + ") unread");
+    },
+
+    error: function(xhr, status, error){
+		    console.log(error);
+    }
+  });
 }
 
 window.onfocus = function() {
@@ -31,6 +39,5 @@ window.onfocus = function() {
 };
 
 window.onblur = function() {
-	checkReqTmr = setInterval(FakeRequests, 1500);
+	checkReqTmr = setInterval(JsonRequests, 1500);
 }
-
