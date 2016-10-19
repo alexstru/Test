@@ -32,9 +32,10 @@ body {
   font-weight: bold;
 }
 
-.home_textarea {
-  width: 300px; 
-  height: 150px; 
-  resize: none; 
+#bio_text {
+  width: 230px;  
 } 
 
+#contacts_text {
+  width: 100px;  
+}

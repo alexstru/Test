@@ -30,4 +30,4 @@ class TestHomeView(TestCase):
 
         # now check if we got proper email
         hello = self.response.context['bio']
-        self.assertEqual(hello[0].email, 'k6_alexstr@ukr.net')
+        self.assertEqual(hello['email'], 'k6_alexstr@ukr.net')
