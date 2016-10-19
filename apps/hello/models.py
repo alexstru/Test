@@ -47,3 +47,15 @@ class AboutMe(models.Model):
 
     def __unicode__(self):
         return u"%s %s" % (self.first_name, self.last_name)
+
+
+class RequestContent(models.Model):
+    ''' RequestContent Model	'''
+
+    method = models.CharField(max_length=7)
+    path = models.TextField('Path', max_length=255)
+    date = models.DateTimeField(auto_now_add=True)
+    status_code = models.IntegerField('Status code', max_length=3)
+
+    def __unicode__(self):
+        return u"%s %s" % (self.path, self.date)

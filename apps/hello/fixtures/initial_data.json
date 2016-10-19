@@ -9,19 +9,27 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2016-10-19T08:49:31.882Z", 
+        "last_login": "2016-09-06T14:16:57.008Z", 
         "groups": [], 
         "user_permissions": [], 
-        "password": "pbkdf2_sha256$12000$4FS73gTixob8$1COt8cBS3ITkpDS2UboqNeOnSNlOYv44SyvGHAxU9rY=", 
+        "password": "pbkdf2_sha256$12000$rbZkUJMTSuFe$hQSU2PXy/V3eulxttT8BoPC3L23dAu1lW0LxDteDqoI=", 
         "email": "k6_alexstr@ukr.net", 
-        "date_joined": "2016-10-19T08:38:55.096Z"
+        "date_joined": "2016-09-06T07:05:47.563Z"
     }
 },
 {
-    "pk": "739cz333yv3r1cn0gdxikfygapoy7z1y", 
+    "pk": "7gy0v0rvypn4yait6zlfdlvf2f0ei0i6", 
     "model": "sessions.session", 
     "fields": {
-        "expire_date": "2016-10-19T08:49:31.934Z", 
+        "expire_date": "2016-09-20T14:16:57.060Z", 
+        "session_data": "ZTJjMGJjYjAzNzk2NGJjZjJkZTdhYzZmZWIzYzgzMDIyZjg5MThjYTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0="
+    }
+},
+{
+    "pk": "oytxljxskcckkokwr5vsvhfppomhfisw", 
+    "model": "sessions.session", 
+    "fields": {
+        "expire_date": "2016-09-22T04:56:09.827Z", 
         "session_data": "ZTJjMGJjYjAzNzk2NGJjZjJkZTdhYzZmZWIzYzgzMDIyZjg5MThjYTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0="
     }
 },
@@ -29,19 +37,37 @@
     "pk": 1, 
     "model": "south.migrationhistory", 
     "fields": {
-        "applied": "2016-10-19T08:47:30.788Z", 
+        "applied": "2016-09-06T13:54:28.257Z", 
         "app_name": "hello", 
         "migration": "0001_initial"
+    }
+},
+{
+    "pk": 2, 
+    "model": "south.migrationhistory", 
+    "fields": {
+        "applied": "2016-09-07T07:31:34.652Z", 
+        "app_name": "hello", 
+        "migration": "0002_auto__add_requestcontent"
+    }
+},
+{
+    "pk": 3, 
+    "model": "south.migrationhistory", 
+    "fields": {
+        "applied": "2016-09-08T04:51:53.098Z", 
+        "app_name": "hello", 
+        "migration": "0003_auto__del_field_aboutme_photo"
     }
 },
 {
     "pk": 1, 
     "model": "hello.aboutme", 
     "fields": {
-        "bio": "I want to be Django Developer. \r\nDjango junior is my first aim.", 
+        "bio": "I want to be Django Developer", 
         "first_name": "Oleksiy", 
         "last_name": "Strutynskyy", 
-        "contacts": "facebook.com \r\nlinkedin.com \r\ngmail.com", 
+        "contacts": "http://www.facebook.com", 
         "birthday": "1979-05-07", 
         "skype": "oleksiy.strutynskyy", 
         "jabber": "alexleon@42cc.co", 
@@ -50,15 +76,129 @@
 },
 {
     "pk": 1, 
+    "model": "hello.requestcontent", 
+    "fields": {
+        "date": "2016-09-08T04:32:56.768Z", 
+        "path": "http://localhost:8000/", 
+        "method": "GET", 
+        "status_code": 200
+    }
+},
+{
+    "pk": 2, 
+    "model": "hello.requestcontent", 
+    "fields": {
+        "date": "2016-09-08T04:32:58.109Z", 
+        "path": "http://localhost:8000/favicon.ico", 
+        "method": "GET", 
+        "status_code": 404
+    }
+},
+{
+    "pk": 3, 
+    "model": "hello.requestcontent", 
+    "fields": {
+        "date": "2016-09-08T04:33:20.578Z", 
+        "path": "http://localhost:8000/", 
+        "method": "GET", 
+        "status_code": 200
+    }
+},
+{
+    "pk": 4, 
+    "model": "hello.requestcontent", 
+    "fields": {
+        "date": "2016-09-08T04:33:30.983Z", 
+        "path": "http://localhost:8000/request/", 
+        "method": "GET", 
+        "status_code": 200
+    }
+},
+{
+    "pk": 5, 
+    "model": "hello.requestcontent", 
+    "fields": {
+        "date": "2016-09-08T04:54:38.549Z", 
+        "path": "http://localhost:8000/", 
+        "method": "GET", 
+        "status_code": 200
+    }
+},
+{
+    "pk": 6, 
+    "model": "hello.requestcontent", 
+    "fields": {
+        "date": "2016-09-08T04:56:02.832Z", 
+        "path": "http://localhost:8000/admin/", 
+        "method": "GET", 
+        "status_code": 200
+    }
+},
+{
+    "pk": 7, 
+    "model": "hello.requestcontent", 
+    "fields": {
+        "date": "2016-09-08T04:56:09.662Z", 
+        "path": "http://localhost:8000/admin/", 
+        "method": "POST", 
+        "status_code": 302
+    }
+},
+{
+    "pk": 8, 
+    "model": "hello.requestcontent", 
+    "fields": {
+        "date": "2016-09-08T04:56:10.087Z", 
+        "path": "http://localhost:8000/admin/", 
+        "method": "GET", 
+        "status_code": 200
+    }
+},
+{
+    "pk": 9, 
+    "model": "hello.requestcontent", 
+    "fields": {
+        "date": "2016-09-08T04:56:13.786Z", 
+        "path": "http://localhost:8000/admin/hello/aboutme/", 
+        "method": "GET", 
+        "status_code": 200
+    }
+},
+{
+    "pk": 10, 
+    "model": "hello.requestcontent", 
+    "fields": {
+        "date": "2016-09-08T04:56:14.266Z", 
+        "path": "http://localhost:8000/admin/jsi18n/", 
+        "method": "GET", 
+        "status_code": 200
+    }
+},
+{
+    "pk": 1, 
     "model": "admin.logentry", 
     "fields": {
         "action_flag": 1, 
-        "action_time": "2016-10-19T08:51:53.074Z", 
+        "action_time": "2016-09-06T14:18:44.321Z", 
         "object_repr": "Oleksiy Strutynskyy", 
         "object_id": "1", 
         "change_message": "", 
         "user": 1, 
         "content_type": 8
     }
+},
+{
+    "pk": 2, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2016-09-06T14:22:16.464Z", 
+        "object_repr": "Oleksiy Strutynskyy", 
+        "object_id": "1", 
+        "change_message": "Changed bio and contacts.", 
+        "user": 1, 
+        "content_type": 8
+    }
 }
 ]
+
