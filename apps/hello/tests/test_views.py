@@ -74,3 +74,24 @@ class TestHomeView(TestCase):
         self.response = self.client.get(self.url)
         self.assertTrue('There is no profile in the db'
                         in self.response.content)
+
+
+class TestRequestsDataView(TestCase):
+    """ hard_coded_requests view test case """
+
+    def test_view_returns_200(self):
+        " test view returns code 200 in response "
+        response = self.client.get(reverse('hello:request'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_requests_list_in_context(self):
+        """ test view response context contains
+        list of 10 request info objects """
+
+        # fill template with 10 requests
+        for i in range(10):
+            response = self.client.get(reverse('hello:request'))
+
+        # check for object_list in context
+        self.assertTrue('object_list' in response.context)
+        self.assertEqual(len(response.context['object_list']), 10)
