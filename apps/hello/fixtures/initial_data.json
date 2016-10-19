@@ -1,0 +1,64 @@
+[
+{
+    "pk": 1, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "admin", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": true, 
+        "is_staff": true, 
+        "last_login": "2016-10-19T08:49:31.882Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$4FS73gTixob8$1COt8cBS3ITkpDS2UboqNeOnSNlOYv44SyvGHAxU9rY=", 
+        "email": "k6_alexstr@ukr.net", 
+        "date_joined": "2016-10-19T08:38:55.096Z"
+    }
+},
+{
+    "pk": "739cz333yv3r1cn0gdxikfygapoy7z1y", 
+    "model": "sessions.session", 
+    "fields": {
+        "expire_date": "2016-10-19T08:49:31.934Z", 
+        "session_data": "ZTJjMGJjYjAzNzk2NGJjZjJkZTdhYzZmZWIzYzgzMDIyZjg5MThjYTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0="
+    }
+},
+{
+    "pk": 1, 
+    "model": "south.migrationhistory", 
+    "fields": {
+        "applied": "2016-10-19T08:47:30.788Z", 
+        "app_name": "hello", 
+        "migration": "0001_initial"
+    }
+},
+{
+    "pk": 1, 
+    "model": "hello.aboutme", 
+    "fields": {
+        "bio": "I want to be Django Developer. \r\nDjango junior is my first aim.", 
+        "first_name": "Oleksiy", 
+        "last_name": "Strutynskyy", 
+        "contacts": "facebook.com \r\nlinkedin.com \r\ngmail.com", 
+        "birthday": "1979-05-07", 
+        "skype": "oleksiy.strutynskyy", 
+        "jabber": "alexleon@42cc.co", 
+        "email": "k6_alexstr@ukr.net"
+    }
+},
+{
+    "pk": 1, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 1, 
+        "action_time": "2016-10-19T08:51:53.074Z", 
+        "object_repr": "Oleksiy Strutynskyy", 
+        "object_id": "1", 
+        "change_message": "", 
+        "user": 1, 
+        "content_type": 8
+    }
+}
+]

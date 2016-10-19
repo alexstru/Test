@@ -42,7 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'south',
     'apps.hello',
 )
 
@@ -114,6 +114,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(BASE_DIR, 'assets'),
+    os.path.join(BASE_DIR, 'apps', 'hello', 'static'),
 )
 
 
@@ -124,6 +125,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(BASE_DIR, 'templates'),
+    os.path.join(BASE_DIR, 'apps', 'hello', 'templates'),
 )
 
 # Turn off south during test

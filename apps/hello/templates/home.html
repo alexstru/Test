@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block meta_title %}<title>Hello app</title>{% endblock meta_title %}
+
+
+{% block content %}
+
+{% if bio %}
+
+<br><br>
+
+<div class="row bio">
+ <div class="col-md-2 smallcol">First name:</div>
+ <div class="col-md-2">{{ bio.first_name }}</div> 
+ <div class="col-md-8"><b>Contacts</b></div> 
+</div>
+
+<div class="row bio">
+ <div class="col-md-2 smallcol">Last name:</div>
+ <div class="col-md-2">{{ bio.last_name }}</div> 
+ <div class="col-md-2 smallcol">Email:</div>
+ <div class="col-md-6">{{ bio.email }}</div>
+</div>
+
+<div class="row bio">
+ <div class="col-md-2 smallcol">Date of birth:</div>
+ <div class="col-md-2">{{ bio.birthday }}</div> 
+ <div class="col-md-2 smallcol">Jabber:</div>
+ <div class="col-md-6">{{ bio.jabber }}</div>
+</div>
+
+<div class="row bio">
+ <div class="col-md-2 smallcol"></div>
+ <div class="col-md-2"></div>
+ <div class="col-md-2 smallcol">Skype:</div>
+ <div class="col-md-6">{{ bio.skype }}</div>
+</div>
+
+<div class="row text">
+ <div class="col-md-4">
+    <br><b>Bio:</b><br>
+    <p id="bio_text">{{bio.bio}}</p>
+ </div>
+
+ <div class="col-md-8">
+    <br><b>Other contacts:</b><br>
+    <p id="contacts_text">{{ bio.contacts }}</p>
+ </div>
+</div>
+
+{% else %}
+
+<div class="row">
+   <div class="col-md-8 alert alert-warning">
+	 There is no profile in the db<br></div>
+   <div class="col-md-4"></div>
+</div>
+
+{% endif %}
+
+{% endblock content %}
+
+
+
+
+
+
