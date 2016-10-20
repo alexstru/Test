@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block meta_title %}<title>Edit Profile</title>{% endblock meta_title %}
+
+{% block body_class %}main-area{% endblock %}
+
+{% block menu %}{% endblock %}
+
+
+{% block content %}
+<div class="col-xs-8" id="content-column">      
+
+<br><br><br>
+
+    <form method="POST" enctype="multipart/form-data" \
+          action="/edit/"> 
+    {% csrf_token %}
+
+    <input id="backurl" type="hidden" value="/" />
+
+    <div class="row-data">
+
+    <div class="col-md-6">
+      <div class="form-group">  
+        <label class="control-label col-lg-4" for="id_first_name">First_name</label>
+        <div class=" col-lg-8 ">
+          <input class="form_widget form-control" id="id_first_name" maxlength="256"        
+                 name="first_name" type="text" value="Oleksiy" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label col-lg-3 " for="id_email">Email</label>
+        <div class=" col-lg-9 ">
+          <input class="form_widget form-control" id="id_email" maxlength="75" name="email"   
+                 type="text" value="k6_alexstr@ukr.net" />
+        </div>
+      </div>
+    </div>
+
+    </div>
+    <br><br>
+
+    <div class="row-data">
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label col-lg-4" for="id_last_name">Last_name</label>
+        <div class=" col-lg-8 ">
+          <input class="form_widget form-control" id="id_last_name" maxlength="256" 
+                 name="last_name" type="text" value="Strutynskyy" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label col-lg-3" for="id_jabber">Jabber</label>
+        <div class=" col-lg-9 ">
+          <input class="form_widget form-control" id="id_jabber" maxlength="256" name="jabber" 
+                 type="text" value="jab" />
+        </div>
+      </div>
+    </div>
+
+    </div>
+    <br><br>
+
+    <div class="row-data">
+
+    <div class="col-md-6">
+      <div class="form-group">  
+        <label class="control-label col-lg-4" for="id_birthday">Birthday</label>
+        <div class=" col-lg-8 ">
+          <input class="datepicker form_widget form-control" id="id_birthday" name="birthday"  
+                 type="text" value="1979-05-08" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">  
+        <label class="control-label col-lg-3" for="id_skype">Skype</label>
+        <div class=" col-lg-9 ">
+          <input class="form_widget form-control" id="id_skype" maxlength="256" name="skype" 
+                 type="text" value="sc" />
+        </div>
+      </div>
+    </div>
+
+    </div>
+    <br><br>
+
+    <div class="row-data">
+
+    <div class="col-md-6">
+      <p>
+      <div class="form-group">
+        <label class="control-label col-lg-4" for="id_photo">Фото</label>
+        <div class=" col-lg-8 ">
+          <input id="id_photo" name="photo" type="file" />
+        </div>
+      </div>
+      </p>
+      <img class="picture" src='{{ STATIC_URL }}img/vishivanka.jpg'>
+      <br><br>
+      <button class="btn btn-small btn-primary" 
+              type="submit"	value="Save">Save</button>
+      <a class="btn btn-small btn-primary" href="/">Back</a>
+      </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label" for="id_contacts">Additional contacts</label>
+        <div>
+          <textarea class="form_widget form-control" cols="40" 
+                    id="id_contacts" name="contacts" rows="10">
+                    facebook.com</textarea>
+        </div>
+      </div>
+
+      <div class="form-group">  
+        <label class="control-label" for="id_bio">About me</label>
+        <div>
+          <textarea class="form_widget form-control" cols="40" 
+                    id="id_bio" name="bio" rows="10">
+                    I want be Django developer</textarea>
+        </div>
+      </div>
+
+    </div>
+
+    </div>
+
+    </form>
+
+</div>
+
+{% endblock content %}
+
+
+

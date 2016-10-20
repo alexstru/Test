@@ -28,3 +28,7 @@ class RequestsView(ListView):
                                 content_type="application/json")
 
         return super(RequestsView, self).get(request, **kwargs)
+
+
+def edit(request):
+    return render(request, 'edit.html')

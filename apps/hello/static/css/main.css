@@ -39,3 +39,13 @@ body {
 #contacts_text {
   width: 100px;  
 }
+
+.main-area {
+    padding-left: 60px;
+    padding-right: 60px;
+}
+
+.form_widget {
+  background-color: #81DAF5;
+  color: green;
+}
