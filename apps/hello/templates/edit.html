@@ -13,6 +13,7 @@
 <div class="col-xs-8" id="content-column">      
 
 <br><br><br>
+<div class="loader"><img src="{% static 'img/loader.gif' %}"></div>
 
     <div class="row-data">
 
@@ -101,9 +102,11 @@
       </div>
       </p>
       <img class="picture" src='{{ STATIC_URL }}img/vishivanka.jpg'>
+
       <br><br>
-      <button class="btn btn-small btn-primary" 
-              type="submit"	value="Save" onclick="hardcodedUpdate();">Save</button>
+
+      <button class="btn btn-small btn-primary" type="submit"	value="Save" 
+              onclick="fakeLoader();">Save</button>
       <a class="btn btn-small btn-primary" href="/">Back</a>
       </div>
 
