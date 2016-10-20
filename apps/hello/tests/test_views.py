@@ -138,21 +138,63 @@ class TestRequestsDataView(TestCase):
 class ProfileEditViewTests(TestCase):
     """ profile editing view test case """
 
+    def setUp(self):
+        """ Set parametrs for ajax  """
+
+        self.url = reverse('hello:edit', kwargs={'pk': 1}) 
+        self.kwargs={'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
+
+        self.fields_list = ('first_name', 'last_name', 'birthday',
+                       'email', 'jabber', 'skype')
+
+        self.profile = AboutMe.objects.first()
+
     def test_form_in_edit_page(self):
         """ Test html on the edit profile page """
 
         self.client = Client()
-        response = self.client.get(reverse('hello:edit', kwargs={'pk': 1}))
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'edit.html')
         self.assertIn('form', response.context)
 
         form = response.context['form']
-        profile = AboutMe.objects.first()
-        self.assertEqual(profile, form.instance)
+        self.assertEqual(self.profile, form.instance)
 
     def test_image_field(self):
         """ Check that AboutMe instance have ImageField """
 
         photo = AboutMe._meta.get_field('photo')
         self.assertIsInstance(photo, ImageField)
+
+    def test_ajax_invalid_post(self):
+        """ Test for ajax post with errors """
+
+        data = dict.fromkeys(self.fields_list, '')
+
+        self.client.login(username='admin', password='admin')
+        response = self.client.post(self.url, data, **self.kwargs)
+
+        ERROR_MESSAGE = 'This field is required.'
+        self.assertContains(response, ERROR_MESSAGE, 5, 200)
+
+        for field in self.fields_list:
+            self.assertNotEqual(self.profile.serializable_value(field),
+                                data[field])
+
+    def test_ajax_valid_post(self):
+        """ Test for ajax valid post """
+
+        data_list = ('Max', 'Johnson', '2016-01-01',
+                     'max@gmail.com', 'max_jab', 'max_sk')
+
+        data = dict(zip(self.fields_list, data_list))
+
+        self.client.login(username='admin', password='admin')
+        response = self.client.post(self.url, data, **self.kwargs)
+
+        self.assertEqual(response.status_code, 200)
+
+        for field in self.fields_list:
+            self.assertEqual(self.profile.serializable_value(field),
+                             data[field])
