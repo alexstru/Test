@@ -75,3 +75,13 @@ body {
   background-color: pink;
   color: green;
 }
+
+.user-auth {
+width: 100%;
+text-align: right;
+}
+
+.editlink {
+margin-top: 5px;
+text-align: right;
+}
