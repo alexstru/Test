@@ -36,26 +36,32 @@
 </div>
 
 <div class="row bio">
- <div class="col-md-2 smallcol"></div>
+ <div class="col-md-2 smallcol">Photo:</div>
  <div class="col-md-2"></div>
  <div class="col-md-2 smallcol">Skype:</div>
  <div class="col-md-6">{{ bio.skype }}</div>
 </div>
 
-<div class="row text">
- <div class="col-md-4">
-    <br><b>Bio:</b><br>
-    <p id="bio_text">{{bio.bio}}</p>
+<div class="row bio">
+ <div class="col-md-4" id="homephoto">
+      <br>
+      {% if photo_exists %}
+			  <img src="{{ bio.photo.url }}" height="200" width="200"/>
+      {% else %}
+        <img src='{{ STATIC_URL }}img/user_default.png' height="200" width="200">
+      {% endif %}
+      <br><br><br><br>
+      <a id="RequestsButton" class="btn btn-primary btn-xs" 
+         href="{% url 'hello:request' %}" target="_blank">Requests</a>
  </div>
-
  <div class="col-md-8">
     <br><b>Other contacts:</b><br>
     <p id="contacts_text">{{ bio.contacts }}</p>
+    <br>
+    <br><b>Bio:</b><br>
+    <p id="bio_text">{{bio.bio}}</p>
  </div>
 </div>
-
-<div><a id="RequestsButton" class="btn btn-primary btn-xs" 
-         href="{% url 'hello:request' %}" target="_blank">Requests</a></div>
 
 {% else %}
 
@@ -68,8 +74,6 @@
 {% endif %}
 
 {% endblock content %}
-
-
 
 
 

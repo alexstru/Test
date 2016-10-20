@@ -4,6 +4,7 @@ from apps.hello.models import AboutMe
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 import os
+from datetime import date
 
 
 class ProfileUpdateFormTests(TestCase):

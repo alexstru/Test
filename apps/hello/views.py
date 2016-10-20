@@ -4,12 +4,46 @@ from django.views.generic import ListView
 from django.http import HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+import os.path
+from urlparse import urlparse
 
 
 def home(request):
-    bio = AboutMe.objects.first()
+    bio = None
+    photo_exists = False
 
-    return render(request, 'home.html', {'bio': bio})
+    # check if there are entries in the db
+    try:
+        bio = AboutMe.objects.first()
+
+    except IndexError:
+        pass
+
+    if bio:
+        # check if user clear image in edit.html
+        try:
+            host = os.path.abspath(__file__)
+
+            for i in range(4):
+                host = os.path.dirname(host)
+
+            name = urlparse(bio.photo.url).path
+
+        except ValueError:
+            return render(request,
+                          'home.html',
+                          {'bio': bio, 'photo_exists': photo_exists})
+
+        # check if user deletes image in file system
+        try:
+            if os.path.isfile(host + name):
+                photo_exists = True
+        except IOError:
+            pass
+
+    return render(request,
+                  'home.html',
+                  {'bio': bio, 'photo_exists': photo_exists})
 
 
 class RequestsView(ListView):

@@ -45,6 +45,13 @@ class AboutMe(models.Model):
         blank=True,
         verbose_name=u"Additional contacts")
 
+    photo = models.ImageField(
+        upload_to='photo',
+        null=False,
+        blank=True,
+        verbose_name=u"Фото",
+        default='{{ STATIC_URL }}img/user_default.png')
+
     def __unicode__(self):
         return u"%s %s" % (self.first_name, self.last_name)
 
