@@ -132,3 +132,26 @@ class TestRequestsDataView(TestCase):
         self.assertEqual(data['dbcount'], 1)
         self.assertTrue('http://testserver/' in data['reqlogs'][0]['path'])
         self.assertContains(response, '"method": "GET"', 1, 200)
+
+
+class ProfileEditViewTests(TestCase):
+    """ profile editing view test case """
+
+    def test_form_in_edit_page(self):
+        """ Test html on the edit profile page """
+
+        self.client = Client()
+        response = self.client.get(reverse('hello:edit'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'edit.html')
+        self.assertIn('form', response.context)
+
+        form = response.context['form']
+        profile = AboutMe.objects.first()
+        self.assertEqual(profile, form.instance)
+
+    def test_image_field(self):
+        """ Check that AboutMe instance have ImageField """
+
+        photo = AboutMe._meta.get_field('photo')
+        self.assertIsInstance(photo, ImageField)
