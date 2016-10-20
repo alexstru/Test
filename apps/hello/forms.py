@@ -9,14 +9,13 @@ class ProfileUpdateForm(ModelForm):
 
     class Meta:
         model = AboutMe
-        fields = [
-            'first_name',
-            'last_name',
-            'birthday',
-            'email',
-            'jabber',
-            'skype',
-            'contacts',
-            'bio',
-            'photo'
-        ]
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form_widget'}),
+            'last_name': forms.TextInput(attrs={'class': 'form_widget'}),
+            'birthday': forms.TextInput(attrs={'class': 'form_widget'}),
+            'email': forms.TextInput(attrs={'class': 'form_widget'}),
+            'jabber': forms.TextInput(attrs={'class': 'form_widget'}),
+            'skype': forms.TextInput(attrs={'class': 'form_widget'}),
+            'contacts': forms.Textarea(attrs={'class': 'form_widget'}),
+            'bio': forms.Textarea(attrs={'class': 'form_widget'}),
+        }

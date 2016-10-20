@@ -142,7 +142,7 @@ class ProfileEditViewTests(TestCase):
         """ Test html on the edit profile page """
 
         self.client = Client()
-        response = self.client.get(reverse('hello:edit'))
+        response = self.client.get(reverse('hello:edit', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'edit.html')
         self.assertIn('form', response.context)

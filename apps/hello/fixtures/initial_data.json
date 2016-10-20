@@ -36,6 +36,15 @@
     }
 },
 {
+    "pk": 3, 
+    "model": "south.migrationhistory", 
+    "fields": {
+        "applied": "2016-10-03T08:35:40.600Z", 
+        "app_name": "hello", 
+        "migration": "0003_auto__add_field_aboutme_photo"
+    }
+},
+{
     "pk": 1, 
     "model": "hello.aboutme", 
     "fields": {
@@ -43,6 +52,7 @@
         "first_name": "Oleksiy", 
         "last_name": "Strutynskyy", 
         "contacts": "facebook.com\r\nlinkedin.com\r\ngmail.com", 
+        "photo": "photo/vishivanka.jpg",
         "birthday": "1979-05-07", 
         "skype": "oleksiy.strutynskyy", 
         "jabber": "alexleon@42cc.co", 
