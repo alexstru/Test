@@ -1,8 +1,10 @@
 
+var onLoadRequestsDB = 0; // get requests count in DB after window.onload
+var ajaxRequestsDB = 0;   // get requests count in DB after current AJAX
+var firstAJAX = false;    // init first ajax after loading request.html
+var checkReqTmr;          // timer for checking request's logs
+
 var $initTitle = $('title').text();
-var checkReqTmr; // timer for checking request's logs
-var unread = 0;
-var focused = 0;
 
 
 function toDate(dateStr) {  
@@ -39,17 +41,31 @@ function toDate(dateStr) {
 
 
 function JsonRequests() {
-  var currentUrl = location.href;
-
 	$.ajax({
     type: 'GET',
-    url: currentUrl,
+    url: location.href,
 	  cache: false,
     dataType: 'json',
 
-	  success: function(data){
+	  success: function(data, status, xhr){
+		    var newContent;
+		    ajaxRequestsDB = data.dbcount;
+		   
+		    if (firstAJAX) {
+		       onLoadRequestsDB = ajaxRequestsDB;
+		       firstAJAX = false;
+		    }
+
+		    var unreadRequests = ajaxRequestsDB - onLoadRequestsDB;
+
+		    if (!unreadRequests) {
+		      $('title').text($initTitle);
+		    } else {
+		      $('title').text("(" + unreadRequests + ") unread");
+		    }
 
         /* AJAX get data in JSON like that:
+
         {"dbcount": 701, 
          "reqlogs": [
                     {"date": "2016-09-16 09:20:19.098777+00:00", 
@@ -66,19 +82,14 @@ function JsonRequests() {
                     ]
         }*/
 
-               var newContent;
-               for (var i = 1; i <= data.reqlogs.length; i++) 
-                 newContent += '<tr><td>' + i + '</td>' +
-                               '<td>' + data.reqlogs[i-1].method + '</td>' +
-                               '<td>' + data.reqlogs[i-1].path + '</td>' +
-                               '<td>' + data.reqlogs[i-1].status_code + '</td>' +
-                               '<td>' + toDate(data.reqlogs[i-1].date) + '</td></tr>';
+		    for (var i = 1; i <= data.reqlogs.length; i++) 
+		      newContent += '<tr><td>' + i + '</td>' +
+		        '<td>' + data.reqlogs[i-1].method + '</td>' +
+		        '<td>' + data.reqlogs[i-1].path + '</td>' +
+		        '<td>' + data.reqlogs[i-1].status_code + '</td>' +
+		        '<td>' + toDate(data.reqlogs[i-1].date) + '</td></tr>';
 
-               $('#requests-content').html(newContent);
-               if (!focused) {              
-                 unread++;
-                 $(document).attr("title", "(" + unread + ") unread");
-               }
+		    $('#requests-content').html(newContent);
     },
 
     error: function(xhr, status, error){
@@ -88,15 +99,18 @@ function JsonRequests() {
 }
 
 
-window.onfocus = function() {
-  focused = 1;
-  clearTimeout(checkReqTmr);
-  $('title').text($initTitle);
-  unread = 0;
+window.onload = function() {
+  firstAJAX = true;
+  JsonRequests();
 };
 
 
+window.onfocus = function() {
+  clearTimeout(checkReqTmr);
+  $('title').text($initTitle);
+  onLoadRequestsDB = ajaxRequestsDB;
+};
+
 window.onblur = function() {
-  focused = 0;
-	checkReqTmr = setInterval(JsonRequests, 1500);
-}
+  checkReqTmr = setInterval(JsonRequests, 1500);
+};

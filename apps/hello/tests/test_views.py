@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 from apps.hello.models import AboutMe, RequestContent
+import json
+
 
 NORMAL = {
     'first_name': 'Alex',
@@ -107,3 +109,26 @@ class TestRequestsDataView(TestCase):
         response = self.client.get(reverse('hello:request'))
         self.assertTrue('There is no entries in the db yet'
                         in response.content)
+
+    def test_ajax(self):
+        """Requests page updates asynchronously
+            as new requests come in
+        """
+        RequestContent.objects.all().delete()
+        response = self.client.get(reverse('hello:request'),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        data = json.loads(response.content.decode())
+
+        self.assertEqual(data['dbcount'], 0)
+        self.assertEqual(data['reqlogs'], [])
+
+        self.client.get(reverse('hello:home'))
+        response = self.client.get(reverse('hello:request'),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        data = json.loads(response.content.decode())
+
+        self.assertEqual(data['dbcount'], 1)
+        self.assertTrue('http://testserver/' in data['reqlogs'][0]['path'])
+        self.assertContains(response, '"method": "GET"', 1, 200)
