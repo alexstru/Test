@@ -88,11 +88,11 @@ class TestRequestsDataView(TestCase):
         """ test view response context contains
         list of 10 request info objects """
 
-        # fill template with 10 requests
-        for i in range(10):
+        # fill template with 11 requests
+        for i in range(11):
             response = self.client.get(reverse('hello:request'))
 
-        # check for object_list in context
+        # check for 10 objects in context
         self.assertTrue('object_list' in response.context)
         self.assertEqual(len(response.context['object_list']), 10)
 

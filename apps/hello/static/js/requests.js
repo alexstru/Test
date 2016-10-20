@@ -45,15 +45,35 @@ function JsonRequests() {
     type: 'GET',
     url: currentUrl,
 	  cache: false,
+    dataType: 'json',
+
 	  success: function(data){
+
+        /* AJAX get data in JSON like that:
+        {"dbcount": 701, 
+         "reqlogs": [
+                    {"date": "2016-09-16 09:20:19.098777+00:00", 
+                     "path": "http://localhost:8000/request/", 
+                     "status_code": 200, 
+                     "id": 701, 
+                     "method": "GET"}, 
+                    .....
+                    {"date": "2016-09-16 09:20:12.355412+00:00", 
+                     "path": "http://localhost:8000/admin/", 
+                     "status_code": 200, 
+                     "id": 700, 
+                     "method": "GET"}
+                    ]
+        }*/
+
                var newContent;
-               for (var i = 1; i <= data.length; i++) 
+               for (var i = 1; i <= data.reqlogs.length; i++) 
                  newContent += '<tr><td>' + i + '</td>' +
-                               '<td>' + data[i-1].fields.method + '</td>' +
-                               '<td>' + data[i-1].fields.path + '</td>' +
-                               '<td>' + data[i-1].fields.status_code + '</td>' +
-                               '<td>' + toDate(data[i-1].fields.date) + '</td></tr>';
-               
+                               '<td>' + data.reqlogs[i-1].method + '</td>' +
+                               '<td>' + data.reqlogs[i-1].path + '</td>' +
+                               '<td>' + data.reqlogs[i-1].status_code + '</td>' +
+                               '<td>' + toDate(data.reqlogs[i-1].date) + '</td></tr>';
+
                $('#requests-content').html(newContent);
                if (!focused) {              
                  unread++;

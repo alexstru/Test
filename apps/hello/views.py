@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from .models import AboutMe, RequestContent
 from django.views.generic import ListView
-from django.core import serializers
 from django.http import HttpResponse
+import json
 
 
 def home(request):
@@ -18,8 +18,13 @@ class RequestsView(ListView):
 
     def get(self, request, **kwargs):
         if request.is_ajax():
-            self.object_list = self.get_queryset()
-            data = serializers.serialize("json", self.get_queryset())
-            return HttpResponse(data, content_type='application/json')
+
+            jsonDict = {
+                "dbcount": len(RequestContent.objects.all()),
+                "reqlogs": list(self.get_queryset().values())
+            }
+
+            return HttpResponse(json.dumps(jsonDict, default=lambda x: str(x)),
+                                content_type="application/json")
 
         return super(RequestsView, self).get(request, **kwargs)
