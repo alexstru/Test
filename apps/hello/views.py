@@ -3,6 +3,7 @@ from .models import AboutMe, RequestContent
 from django.views.generic import ListView
 from django.http import HttpResponse
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 def home(request):
@@ -30,5 +31,6 @@ class RequestsView(ListView):
         return super(RequestsView, self).get(request, **kwargs)
 
 
+@csrf_exempt
 def edit(request):
     return render(request, 'edit.html')
