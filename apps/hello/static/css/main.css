@@ -69,3 +69,9 @@ body {
   top: 30%;
   margin-top: -25px;
 }
+
+#failmessage {
+  border: 1px solid red;
+  background-color: pink;
+  color: green;
+}
