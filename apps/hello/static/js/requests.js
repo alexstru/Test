@@ -99,18 +99,36 @@ function JsonRequests() {
 }
 
 
+window.addEventListener("storage", function() {
+  if (localStorage.synchronizePages == 'true') {
+      firstAJAX = true;
+      JsonRequests();
+    } else if (localStorage.synchronizeInitTitle == 'true') {
+      clearTimeout(checkReqTmr);
+      $('title').text($initTitle);
+      onLoadRequestsDB = ajaxRequestsDB;
+    } else {
+    checkReqTmr = setInterval(JsonRequests, 1500);
+  }
+}, false);
+
+
 window.onload = function() {
+  localStorage.setItem('synchronizePages', true);
   firstAJAX = true;
   JsonRequests();
 };
 
 
 window.onfocus = function() {
+  localStorage.setItem('synchronizeInitTitle', true);
   clearTimeout(checkReqTmr);
   $('title').text($initTitle);
   onLoadRequestsDB = ajaxRequestsDB;
 };
 
 window.onblur = function() {
+  localStorage.setItem('synchronizePages', false);
+  localStorage.setItem('synchronizeInitTitle', false);
   checkReqTmr = setInterval(JsonRequests, 1500);
 };
