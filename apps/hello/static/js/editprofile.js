@@ -22,6 +22,30 @@ function unblockPage() {
 		$('.loader').css('display', 'none');
 }
 
+// Change image when user select another file
+
+$("#id_photo").change(function() {
+  var input = this;
+
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      $(".picture").attr('src', e.target.result);
+    }
+
+    reader.readAsDataURL(input.files[0]);
+  }
+});
+
+// Change image to default when user clear image in edit.html
+
+$('input[name="photo-clear"]').click(function() {
+  $('input[name="photo"]').parent('div').hide();
+  $('label[for="id_photo"]').after('<div><br><br></div>');
+  $(".picture").attr('src', '/static/img/user_default.png');
+}); 
+
 
 $(document).ready(function() {
 
@@ -38,6 +62,7 @@ $(document).ready(function() {
                         " bg-success prof_updated'>" +
                         "Changes have been save!</div><br><br>";
           $('.loader').before(message);
+
           setTimeout(function() {
             $('#goodmessage').remove();
             $('#content-column br').eq(0).remove();
@@ -48,12 +73,19 @@ $(document).ready(function() {
         error: function(msg) {
 
           unblockPage();
-          var message = "<div id='failmessage' class='col-xs-12'>" +
-                        "<b>Check errors, please!</b></div>";
+          var message = '';
+          var errors = JSON.parse(msg.responseText);
+
+          if (errors['Image']) {
+            message = "<div id='failmessage' class='col-xs-12'><b>" +
+                       errors['Image'] + "</b></div>";
+          } else {
+            message = "<div id='failmessage' class='col-xs-12'>" +
+                      "<b>Check errors, please!</b></div>";
+          }
+
           $('.loader').before(message);
           $('#failmessage').after("<p id='after_fail_empty_string'>&nbsp</p>");
-
-          var errors = JSON.parse(msg.responseText);
 
           var fields = ['first_name', 'last_name',  'birthday',
                         'email', 'jabber', 'skype'];
@@ -74,7 +106,8 @@ $(document).ready(function() {
         }
   };
 
-  $('#ajaxform').ajaxForm(options);
+  $('#ajaxform').ajaxForm(options);    
+  
 });
 
 

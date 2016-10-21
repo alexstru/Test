@@ -3,6 +3,9 @@ from django.core.urlresolvers import reverse
 from apps.hello.models import AboutMe, RequestContent
 import json
 from django.db.models import ImageField
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
+import os
 
 
 NORMAL = {
@@ -145,7 +148,10 @@ class ProfileEditViewTests(TestCase):
         self.kwargs = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
 
         self.fields_list = ('first_name', 'last_name', 'email',
-                            'jabber', 'skype', 'birthday')
+                            'jabber', 'skype', 'photo', 'birthday')
+
+        IMG_ROOT = os.path.join(settings.BASE_DIR, 'apps/hello/static/img/')
+        self.photo = open(IMG_ROOT + 'test.png', 'rb')
 
     def test_form_in_edit_page(self):
         """ Test html on the edit profile page """
@@ -163,8 +169,8 @@ class ProfileEditViewTests(TestCase):
     def test_image_field(self):
         """ Check that AboutMe instance have ImageField """
 
-        photo = AboutMe._meta.get_field('photo')
-        self.assertIsInstance(photo, ImageField)
+        image = AboutMe._meta.get_field('photo')
+        self.assertIsInstance(image, ImageField)
 
     def test_ajax_invalid_post(self):
         """ Test for ajax post with errors """
@@ -186,8 +192,13 @@ class ProfileEditViewTests(TestCase):
     def test_ajax_valid_post(self):
         """ Test for ajax valid post """
 
-        data_list = ('Max', 'Johnson', 'max@gmail.com',
-                     'max_jab', 'max_sk', '2016-01-01')
+        data_list = ('Max',
+                     'Johnson',
+                     'max@gmail.com',
+                     'max_jab',
+                     'max_sk',
+                     SimpleUploadedFile(self.photo.name, self.photo.read()),
+                     '2016-01-01')
 
         data = dict(zip(self.fields_list, data_list))
 
@@ -198,6 +209,6 @@ class ProfileEditViewTests(TestCase):
 
         profile = AboutMe.objects.first()
 
-        for field in self.fields_list[:-1]:
+        for field in self.fields_list[:-2]:
             self.assertEqual(profile.serializable_value(field),
                              data[field])

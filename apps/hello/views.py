@@ -135,3 +135,16 @@ class ProfileUpdateView(UpdateView):
             return HttpResponseBadRequest(json.dumps(errors_dict))
 
         return super(ProfileUpdateView, self).form_invalid(form)
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            try:
+                return super(ProfileUpdateView,
+                             self).post(request, *args, **kwargs)
+            except IOError:
+                message = "File doesn't exist:  " + self.object.photo.url
+                return HttpResponseBadRequest(
+                          json.dumps({'Image': message}),
+                          content_type="application/json")
+
+        return super(ProfileUpdateView, self).post(request, *args, **kwargs)
