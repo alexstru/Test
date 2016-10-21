@@ -1,8 +1,8 @@
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-
 from apps.hello.models import AboutMe, RequestContent,  ModelsChange
+from apps.hello.utils import GetTestImage
 
 
 class SignalsTest(TestCase):
@@ -29,10 +29,12 @@ class SignalsTest(TestCase):
         Check signal processor saves log
         about model object updating
         """
+
         ModelsChange.objects.all().delete()
         profile = AboutMe.objects.first()
         profile.first_name = 'Leo'
         profile.email = 'leo.nardo@gmail.com'
+        profile.photo = GetTestImage('test.png')
         profile.save()
 
         self.assertEqual(ModelsChange.objects.all().count(), 1)

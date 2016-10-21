@@ -3,9 +3,7 @@ from django.core.urlresolvers import reverse
 from apps.hello.models import AboutMe, RequestContent
 import json
 from django.db.models import ImageField
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
-import os
+from apps.hello.utils import GetTestImage
 
 
 NORMAL = {
@@ -153,9 +151,6 @@ class ProfileEditViewTests(TestCase):
         self.fields_list = ('first_name', 'last_name', 'email',
                             'jabber', 'skype', 'photo', 'birthday')
 
-        IMG_ROOT = os.path.join(settings.BASE_DIR, 'apps/hello/static/img/')
-        self.photo = open(IMG_ROOT + 'test.png', 'rb')
-
     def test_form_in_edit_page(self):
         """ Test html on the edit profile page """
 
@@ -200,7 +195,7 @@ class ProfileEditViewTests(TestCase):
                      'max@gmail.com',
                      'max_jab',
                      'max_sk',
-                     SimpleUploadedFile(self.photo.name, self.photo.read()),
+                     GetTestImage('test.png'),
                      '2016-01-01')
 
         data = dict(zip(self.fields_list, data_list))

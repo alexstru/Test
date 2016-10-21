@@ -1,11 +1,8 @@
 from django.test import TestCase
 from apps.hello.forms import ProfileUpdateForm
 from apps.hello.models import AboutMe
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
 from datetime import date
-import os
-from PIL import Image
+from apps.hello.utils import GetTestImage
 
 
 NORMAL = {"id": 1,
@@ -26,12 +23,9 @@ class ProfileUpdateFormTests(TestCase):
         Check that form saves correct data
         """
         instance = AboutMe.objects.first()
-        IMG_ROOT = os.path.join(settings.BASE_DIR, 'apps/hello/static/img/')
-        photo = open(IMG_ROOT + 'test.png', 'rb')
 
         form = ProfileUpdateForm(NORMAL,
-                                 {'photo': SimpleUploadedFile(photo.name,
-                                                              photo.read())},
+                                 {'photo': GetTestImage('test.png')},
                                  instance=instance)
 
         self.assertTrue(form.is_valid())
@@ -67,16 +61,12 @@ class ProfileUpdateFormTests(TestCase):
         """
         instance = AboutMe.objects.first()
 
-        IMG_ROOT = os.path.join(settings.BASE_DIR, 'apps/hello/static/img/')
-        photo = open(IMG_ROOT + 'test.png', 'rb')
-
-        image = Image.open(IMG_ROOT + 'test.png')
+        image = GetTestImage('test.png', 'PIL')
         self.assertGreater(image.height, 200)
         self.assertGreater(image.width, 200)
 
         form = ProfileUpdateForm(NORMAL,
-                                 {'photo': SimpleUploadedFile(photo.name,
-                                                              photo.read())},
+                                 {'photo': GetTestImage('test.png')},
                                  instance=instance)
 
         self.assertTrue(form.is_valid())
@@ -84,6 +74,6 @@ class ProfileUpdateFormTests(TestCase):
 
         # check image resize
         profile = AboutMe.objects.first()
-        image_resized = Image.open(profile.photo)
+        image_resized = GetTestImage(profile.photo, 'PIL')
         self.assertLessEqual(image_resized.height, 200)
         self.assertLessEqual(image_resized.width, 200)
