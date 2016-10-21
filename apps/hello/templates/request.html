@@ -13,7 +13,7 @@
 {% if object_list %}
 
 <br>
-<div class=" well col-md-8" id="content-column">
+<div class=" well col-md-10" id="content-column">
 <br>
 
 			<table class="table table-condensed">
@@ -24,6 +24,7 @@
 						<th>Url</th>
 						<th>Status Code</th>
 						<th>Date&Time</th>
+            <th>Priority</th>
 					</tr>
 				</thead>
 
@@ -36,6 +37,9 @@
 						<td>{{ request.path }}</td>
 						<td>{{ request.status_code }}</td>
 						<td>{{ request.date }}</td>
+            <td style="text-align: center;">
+              <a id="priority_{{ request.id }}">{{ request.priority }}</a>
+            </td>
 					</tr>
 					{% endfor %}
 

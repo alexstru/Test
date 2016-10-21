@@ -70,13 +70,15 @@ function JsonRequests() {
          "reqlogs": [
                     {"date": "2016-09-16 09:20:19.098777+00:00", 
                      "path": "http://localhost:8000/request/", 
-                     "status_code": 200, 
+                     "status_code": 200,
+                     "priority": 0,  
                      "id": 701, 
                      "method": "GET"}, 
                     .....
                     {"date": "2016-09-16 09:20:12.355412+00:00", 
                      "path": "http://localhost:8000/admin/", 
                      "status_code": 200, 
+                     "priority": 7, 
                      "id": 700, 
                      "method": "GET"}
                     ]
@@ -87,7 +89,18 @@ function JsonRequests() {
 		        '<td>' + data.reqlogs[i-1].method + '</td>' +
 		        '<td>' + data.reqlogs[i-1].path + '</td>' +
 		        '<td>' + data.reqlogs[i-1].status_code + '</td>' +
-		        '<td>' + toDate(data.reqlogs[i-1].date) + '</td></tr>';
+		        '<td>' + toDate(data.reqlogs[i-1].date) + '</td>' +
+            '<td style="text-align: center;">' +
+            '<a class="priority" href="" ' + 
+            'id="priority_' + data.reqlogs[i-1].id + '">' + 
+            data.reqlogs[i-1].priority + '</a>  ' +
+            '<select data-request-id="' + data.reqlogs[i-1].id + '">' +
+            '<option value="0">0</option><option value="1">1</option>' +
+            '<option value="2">2</option><option value="3">3</option>' +
+            '<option value="4">4</option><option value="5">5</option>' +
+            '<option value="6">6</option><option value="7">7</option>' +
+            '<option value="8">8</option><option value="9">9</option>' +
+            '</select></td></tr>';
 
 		    $('#requests-content').html(newContent);
     },
