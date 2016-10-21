@@ -2,6 +2,10 @@ from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 from apps.hello.models import AboutMe, RequestContent
 import json
+from django.db.models import ImageField
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
+import os
 
 
 NORMAL = {
@@ -81,6 +85,9 @@ class TestHomeView(TestCase):
 class TestRequestsDataView(TestCase):
     """ hard_coded_requests view test case """
 
+    def setUp(self):
+        self.client.login(username='admin', password='admin')
+
     def test_view_returns_200(self):
         " test view returns code 200 in response "
         response = self.client.get(reverse('hello:request'))
@@ -132,3 +139,79 @@ class TestRequestsDataView(TestCase):
         self.assertEqual(data['dbcount'], 1)
         self.assertTrue('http://testserver/' in data['reqlogs'][0]['path'])
         self.assertContains(response, '"method": "GET"', 1, 200)
+
+
+class ProfileEditViewTests(TestCase):
+    """ profile editing view test case """
+
+    def setUp(self):
+        """ Set parametrs for ajax  """
+
+        self.url = reverse('hello:edit', kwargs={'pk': 1})
+        self.kwargs = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
+
+        self.fields_list = ('first_name', 'last_name', 'email',
+                            'jabber', 'skype', 'photo', 'birthday')
+
+        IMG_ROOT = os.path.join(settings.BASE_DIR, 'apps/hello/static/img/')
+        self.photo = open(IMG_ROOT + 'test.png', 'rb')
+
+    def test_form_in_edit_page(self):
+        """ Test html on the edit profile page """
+
+        self.client.login(username='admin', password='admin')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'edit.html')
+        self.assertIn('form', response.context)
+
+        form = response.context['form']
+        profile = AboutMe.objects.first()
+        self.assertEqual(profile, form.instance)
+
+    def test_image_field(self):
+        """ Check that AboutMe instance have ImageField """
+
+        image = AboutMe._meta.get_field('photo')
+        self.assertIsInstance(image, ImageField)
+
+    def test_ajax_invalid_post(self):
+        """ Test for ajax post with errors """
+
+        data = dict.fromkeys(self.fields_list, '')
+
+        self.client.login(username='admin', password='admin')
+        response = self.client.post(self.url, data, **self.kwargs)
+
+        ERROR_MESSAGE = 'This field is required.'
+        self.assertContains(response, ERROR_MESSAGE, 6, 400)
+
+        profile = AboutMe.objects.first()
+
+        for field in self.fields_list:
+            self.assertNotEqual(profile.serializable_value(field),
+                                data[field])
+
+    def test_ajax_valid_post(self):
+        """ Test for ajax valid post """
+
+        data_list = ('Max',
+                     'Johnson',
+                     'max@gmail.com',
+                     'max_jab',
+                     'max_sk',
+                     SimpleUploadedFile(self.photo.name, self.photo.read()),
+                     '2016-01-01')
+
+        data = dict(zip(self.fields_list, data_list))
+
+        self.client.login(username='admin', password='admin')
+        response = self.client.post(self.url, data, **self.kwargs)
+
+        self.assertEqual(response.status_code, 200)
+
+        profile = AboutMe.objects.first()
+
+        for field in self.fields_list[:-2]:
+            self.assertEqual(profile.serializable_value(field),
+                             data[field])

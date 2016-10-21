@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from PIL import Image
 
 
 class AboutMe(models.Model):
@@ -45,8 +46,25 @@ class AboutMe(models.Model):
         blank=True,
         verbose_name=u"Additional contacts")
 
+    photo = models.ImageField(
+        upload_to='photo',
+        null=False,
+        blank=True,
+        verbose_name=u"Фото")
+
     def __unicode__(self):
         return u"%s %s" % (self.first_name, self.last_name)
+
+    def save(self, *args, **kwargs):
+        ''' resize profile image to (200, 200) '''
+
+        size = 200, 200
+        super(AboutMe, self).save(*args, **kwargs)
+        if self.photo:
+            filename = self.photo.path
+            image = Image.open(filename)
+            image.thumbnail(size, Image.ANTIALIAS)
+            image.save(filename)
 
 
 class RequestContent(models.Model):

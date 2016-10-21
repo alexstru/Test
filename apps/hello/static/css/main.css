@@ -39,3 +39,53 @@ body {
 #contacts_text {
   width: 100px;  
 }
+
+.main-area {
+    padding-left: 60px;
+    padding-right: 60px;
+}
+
+.form_widget {
+  background-color: #81DAF5;
+  color: green;
+}
+
+.loader {
+  display:none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  margin-top: -20px;
+  opacity: 0.3;
+}
+
+.loader > img {
+  width: 50px;
+  height: 50px;
+  left: 50%;
+  position: absolute;
+  margin-left: -25px;
+  top: 30%;
+  margin-top: -25px;
+}
+
+#failmessage {
+  border: 1px solid red;
+  background-color: pink;
+  color: green;
+}
+
+.user-auth {
+width: 100%;
+text-align: right;
+}
+
+.editlink {
+margin-top: 5px;
+text-align: right;
+}
+
+#homephoto {
+  width: 330px;
+}
