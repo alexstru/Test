@@ -6,10 +6,6 @@
 
 {% block meta_title %}<title>Edit Profile</title>{% endblock meta_title %}
 
-{% block extra_head %}
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-{% endblock extra_head %}
-
 {% block body_class %}main-area{% endblock %}
 
 {% block menu %}{% endblock %}
@@ -69,8 +65,6 @@
 {% endblock content %}
 
 {% block extra_js %}
-  <script src="{% static "js/jquery-1.11.3.js" %}"></script>
-  <script src="{% static "js/jquery-ui.min.js" %}"></script>
   <script src="{% static "js/jquery.form.min.js" %}"></script>
   <script src="{% static "js/editprofile.js" %}"></script>
 {% endblock extra_js %}
