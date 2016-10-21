@@ -6,6 +6,10 @@
 
 {% block meta_title %}<title>Edit Profile</title>{% endblock meta_title %}
 
+{% block extra_head %} 
+	{{ form.media }} <!-- Connect media from DatePickerWidget -->
+{% endblock %} 
+
 {% block body_class %}main-area{% endblock %}
 
 {% block menu %}{% endblock %}

@@ -16,6 +16,3 @@ class DatePickerWidgetTest(TestCase):
                                       'themes/smoothness/jquery-ui.css')
         self.assertContains(response, 'js/jquery-ui.min.js')
         self.assertContains(response, "$('#id_birthday').datepicker(")
-
-
-
