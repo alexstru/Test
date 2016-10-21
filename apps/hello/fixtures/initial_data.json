@@ -45,6 +45,24 @@
     }
 },
 {
+    "pk": 4, 
+    "model": "south.migrationhistory", 
+    "fields": {
+        "applied": "2016-10-07T10:42:04.544Z", 
+        "app_name": "hello", 
+        "migration": "0004_auto__add_modelschange"
+    }
+},
+{
+    "pk": 5, 
+    "model": "south.migrationhistory", 
+    "fields": {
+        "applied": "2016-10-11T08:23:33.665Z", 
+        "app_name": "hello", 
+        "migration": "0005_auto__add_field_requestcontent_priority"
+    }
+},
+{
     "pk": 1, 
     "model": "hello.aboutme", 
     "fields": {
@@ -63,8 +81,9 @@
     "pk": 1, 
     "model": "hello.requestcontent", 
     "fields": {
-        "date": "2016-10-19T11:40:12.136Z", 
+        "date": "2016-09-29T11:40:12.136Z", 
         "path": "/request/", 
+        "priority": 0,
         "method": "GET", 
         "status_code": 200
     }
@@ -73,8 +92,9 @@
     "pk": 2, 
     "model": "hello.requestcontent", 
     "fields": {
-        "date": "2016-10-19T11:40:12.136Z", 
+        "date": "2016-09-29T11:41:12.136Z", 
         "path": "/request/", 
+        "priority": 0,
         "method": "GET", 
         "status_code": 200
     }
@@ -83,8 +103,9 @@
     "pk": 3, 
     "model": "hello.requestcontent", 
     "fields": {
-        "date": "2016-10-19T11:40:12.136Z", 
+        "date": "2016-09-29T11:42:12.136Z", 
         "path": "/request/", 
+        "priority": 0,
         "method": "GET", 
         "status_code": 200
     }
@@ -93,8 +114,9 @@
     "pk": 4, 
     "model": "hello.requestcontent", 
     "fields": {
-        "date": "2016-10-19T11:40:12.136Z", 
+        "date": "2016-09-29T11:43:12.136Z", 
         "path": "/request/", 
+        "priority": 0,
         "method": "GET", 
         "status_code": 200
     }
@@ -103,8 +125,9 @@
     "pk": 5, 
     "model": "hello.requestcontent", 
     "fields": {
-        "date": "2016-10-19T11:40:12.136Z", 
+        "date": "2016-09-29T11:44:12.136Z", 
         "path": "/request/", 
+        "priority": 0,
         "method": "GET", 
         "status_code": 200
     }
@@ -113,8 +136,9 @@
     "pk": 6, 
     "model": "hello.requestcontent", 
     "fields": {
-        "date": "2016-10-19T11:40:12.136Z", 
+        "date": "2016-09-29T11:45:12.136Z", 
         "path": "/request/", 
+        "priority": 0,
         "method": "GET", 
         "status_code": 200
     }
@@ -123,8 +147,9 @@
     "pk": 7, 
     "model": "hello.requestcontent", 
     "fields": {
-        "date": "2016-10-19T11:40:12.136Z", 
+        "date": "2016-09-29T11:46:12.136Z", 
         "path": "/request/", 
+        "priority": 0,
         "method": "GET", 
         "status_code": 200
     }
@@ -133,8 +158,9 @@
     "pk": 8, 
     "model": "hello.requestcontent", 
     "fields": {
-        "date": "2016-10-19T11:40:12.136Z", 
+        "date": "2016-09-29T11:47:12.136Z", 
         "path": "/request/", 
+        "priority": 0,
         "method": "GET", 
         "status_code": 200
     }
@@ -143,8 +169,9 @@
     "pk": 9, 
     "model": "hello.requestcontent", 
     "fields": {
-        "date": "2016-10-19T11:40:12.136Z", 
+        "date": "2016-09-29T11:48:12.136Z", 
         "path": "/request/", 
+        "priority": 0,
         "method": "GET", 
         "status_code": 200
     }
@@ -153,8 +180,9 @@
     "pk": 10, 
     "model": "hello.requestcontent", 
     "fields": {
-        "date": "2016-10-19T11:40:12.136Z", 
+        "date": "2016-09-29T11:49:12.136Z", 
         "path": "/request/", 
+        "priority": 0,
         "method": "GET", 
         "status_code": 200
     }
