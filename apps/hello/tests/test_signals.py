@@ -13,7 +13,7 @@ class SignalsTest(TestCase):
 
     def test_creation_log(self):
         """
-        Check signal processor saves log 
+        Check signal processor saves log
         about model object creation
         """
         ModelsChange.objects.all().delete()
@@ -22,11 +22,11 @@ class SignalsTest(TestCase):
 
         self.assertEqual(RequestContent.objects.all().count(), 11)
         self.assertEqual(ModelsChange.objects.all().count(), 1)
-        self.assertEqual(event.event_type, 'CREATE')
+        self.assertEqual(event.action, 'CREATE')
 
     def test_updating_log(self):
         """
-        Check signal processor saves log 
+        Check signal processor saves log
         about model object updating
         """
         ModelsChange.objects.all().delete()
@@ -38,12 +38,12 @@ class SignalsTest(TestCase):
         self.assertEqual(ModelsChange.objects.all().count(), 1)
         event = ModelsChange.objects.last()
 
-        self.assertEqual(event.sender, profile._meta.object_name)
-        self.assertEqual(event.event_type, 'UPDATE')
+        self.assertIn(profile._meta.object_name, event.model)
+        self.assertEqual(event.action, 'UPDATE')
 
     def test_deletion_log(self):
         """
-        Check signal processor saves log 
+        Check signal processor saves log
         about model object deletion
         """
         ModelsChange.objects.all().delete()
@@ -52,5 +52,5 @@ class SignalsTest(TestCase):
         event = ModelsChange.objects.last()
 
         self.assertEqual(ModelsChange.objects.all().count(), 1)
-        self.assertEqual(event.sender, profile._meta.object_name)
-        self.assertEqual(event.event_type, 'DELETE')
+        self.assertIn(profile._meta.object_name, event.model)
+        self.assertEqual(event.action, 'DELETE')

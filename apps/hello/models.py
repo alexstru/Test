@@ -80,7 +80,7 @@ class RequestContent(models.Model):
 
 
 class ModelsChange(models.Model):
-    ''' Model with entries about creation/updating/deletion 
+    ''' Model with entries about creation/updating/deletion
     in AboutMe/RequestContent Models '''
 
     model = models.CharField(max_length=10)
