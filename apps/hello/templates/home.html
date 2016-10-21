@@ -59,9 +59,15 @@
       {% else %}
         <img src='{{ STATIC_URL }}img/user_default.png' height="200" width="200">
       {% endif %}
+
       <br><br><br><br>
       <a id="RequestsButton" class="btn btn-primary btn-xs" 
          href="{% url 'hello:request' %}" target="_blank">Requests</a>
+
+      <a class="btn btn-primary btn-xs" 
+         href="{% url 'admin:hello_modelschange_changelist' %}"
+         target="_blank">Models changes</a>
+
  </div>
  <div class="col-md-8">
     <br><b>Other contacts:</b><br>
