@@ -85,6 +85,9 @@ class TestHomeView(TestCase):
 class TestRequestsDataView(TestCase):
     """ hard_coded_requests view test case """
 
+    def setUp(self):
+        self.client.login(username='admin', password='admin')
+
     def test_view_returns_200(self):
         " test view returns code 200 in response "
         response = self.client.get(reverse('hello:request'))
@@ -156,7 +159,7 @@ class ProfileEditViewTests(TestCase):
     def test_form_in_edit_page(self):
         """ Test html on the edit profile page """
 
-        self.client = Client()
+        self.client.login(username='admin', password='admin')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'edit.html')

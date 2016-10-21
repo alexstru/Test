@@ -10,7 +10,9 @@
 {% if bio %}
 
 <div class="row editlink">
-   <a id="edit" href="{% url "hello:edit" bio.pk %}"> Edit </a>
+    {% if user.is_authenticated %}
+        <a id="edit" href="{% url "hello:edit" bio.pk %}"> Edit </a>
+    {% endif %}
 </div>
 
 <br><br>
