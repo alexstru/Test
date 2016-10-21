@@ -94,7 +94,8 @@ function JsonRequests() {
             '<a class="priority" href="" ' + 
             'id="priority_' + data.reqlogs[i-1].id + '">' + 
             data.reqlogs[i-1].priority + '</a>  ' +
-            '<select data-request-id="' + data.reqlogs[i-1].id + '">' +
+            '<select style="display: none;" ' +
+            'data-request-id="' + data.reqlogs[i-1].id + '">' +
             '<option value="0">0</option><option value="1">1</option>' +
             '<option value="2">2</option><option value="3">3</option>' +
             '<option value="4">4</option><option value="5">5</option>' +
@@ -140,8 +141,38 @@ window.onfocus = function() {
   onLoadRequestsDB = ajaxRequestsDB;
 };
 
+
 window.onblur = function() {
   localStorage.setItem('synchronizePages', false);
   localStorage.setItem('synchronizeInitTitle', false);
   checkReqTmr = setInterval(JsonRequests, 1500);
 };
+
+
+$(document).on('click', 'a.priority', function() {
+  $prioritySelector = $(this).parent().find('select').val($(this).text());
+  $prioritySelector.attr('size', 10).show();
+  return false;
+});
+
+
+$(document).on('change', 'select', function() {
+  $(this).hide();
+
+		$.ajax({
+			'url': location.href,
+			'type': 'POST',
+			'dataType': 'json',
+			'data': {
+				'pk': $(this).data('request-id'),
+				'priority': $(this).val(),
+				'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+			},
+			'error': function(xhr, status, error){
+				alert(error);
+			},
+			'success': function(data, status, xhr){
+				$(data.link_id).text(data.priority);
+			}
+		});
+});

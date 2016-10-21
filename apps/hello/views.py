@@ -90,6 +90,21 @@ class RequestsView(ListView):
 
         return super(RequestsView, self).get(request, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+
+        ''' get RequestContent object for given request '''
+        request_content = RequestContent.objects.get(pk=data['pk'])
+        request_content.priority = data['priority']
+        request_content.save()
+
+        ''' return JSON '''
+        json_data = {	'link_id': '#priority_' + str(request_content.id),
+                      'priority': request_content.priority}
+
+        return HttpResponse(json.dumps(json_data),
+                            content_type="application/json")
+
 
 class ProfileUpdateView(UpdateView):
     model = AboutMe
