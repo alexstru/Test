@@ -70,12 +70,33 @@ def home(request):
 
 class RequestsView(ListView):
     model = RequestContent
-    queryset = RequestContent.objects.order_by('-date')[:10]
     template_name = 'request.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(RequestsView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        if 'priority' in self.request.GET:
+            priority = int(self.request.GET.get('priority', ''))
+
+            if priority == 1:
+                queryset = RequestContent.objects.order_by('-priority')[:10]
+            else:
+                queryset = RequestContent.objects.order_by('priority')[:10]
+
+        elif 'date' in self.request.GET:
+            date = self.request.GET.get('date', '')
+
+            if date == '1':
+                queryset = RequestContent.objects.order_by('-date')[:10]
+            else:
+                queryset = RequestContent.objects.order_by('date')[:10]
+
+        else:
+            queryset = RequestContent.objects.order_by('-date')[:10]
+
+        return queryset
 
     def get(self, request, **kwargs):
         if request.is_ajax():

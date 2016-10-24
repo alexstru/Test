@@ -57,6 +57,7 @@ function JsonRequests() {
         } else {
           sortingMode = true;
         }
+        $('a').attr('disabled', 'disabled');
         console.log('sortingURL: ' + sortingURL);
     },
 
@@ -124,9 +125,11 @@ function JsonRequests() {
             '</select></td></tr>';
 
 		    $('#requests-content').html(newContent);
+        $('a').removeAttr('disabled');
     },
 
     error: function(xhr, status, error){
+        $('a').removeAttr('disabled');
 		    console.log(error);
     }
   });
