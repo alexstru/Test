@@ -23,8 +23,21 @@
 						<th>Method</th>
 						<th>Url</th>
 						<th>Status Code</th>
-						<th>Date&Time</th>
-            <th>Priority</th>
+						<th>
+								<a class="sort" id="dateColumn" href="">
+								<span id="defaultDate">Date&amp;Time</span>
+								<span id="oldestDate" style="display: none;">Date&amp;Time&uarr;</span>
+                <span id="newestDate" style="display: none;">Date&amp;Time&darr;</span>
+								</a>
+						</th>
+						<th>
+								<a class="sort" id="priorityColumn" href="">
+								<span id="defaultPriority">Priority</span>
+								<span id="highPriority" style="display: none;">High Priority&uarr;</span>
+                <span id="lowPriority" style="display: none;">Low Priority&darr;</span>
+								</a>
+
+						</th>
 					</tr>
 				</thead>
 
@@ -37,9 +50,9 @@
 						<td>{{ request.path }}</td>
 						<td>{{ request.status_code }}</td>
 						<td>{{ request.date }}</td>
-            <td style="text-align: center;">
-              <a id="priority_{{ request.id }}">{{ request.priority }}</a>
-            </td>
+						<td style="text-align: center;">
+									<a id="priority_{{ request.id }}">{{ request.priority }}</a>
+						</td>
 					</tr>
 					{% endfor %}
 

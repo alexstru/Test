@@ -3,6 +3,8 @@ var onLoadRequestsDB = 0; // get requests count in DB after window.onload
 var ajaxRequestsDB = 0;   // get requests count in DB after current AJAX
 var firstAJAX = false;    // init first ajax after loading request.html
 var checkReqTmr;          // timer for checking request's logs
+var sortingURL = '';
+var sortingMode = false;
 
 var $initTitle = $('title').text();
 
@@ -43,26 +45,43 @@ function toDate(dateStr) {
 function JsonRequests() {
 	$.ajax({
     type: 'GET',
-    url: location.href,
+    url: sortingURL,
 	  cache: false,
     dataType: 'json',
 
+    beforeSend: function(xhr, settings){
+        if (sortingURL == location.href) {
+          $('a.sort span').hide();
+          $('span#defaultDate').show();
+          $('span#defaultPriority').show();
+        } else {
+          sortingMode = true;
+        }
+        console.log('sortingURL: ' + sortingURL);
+    },
+
 	  success: function(data, status, xhr){
-		    var newContent;
-		    ajaxRequestsDB = data.dbcount;
+
+        console.log('info from json: ' + data.info);
+
+        if (!sortingMode) {
+		      ajaxRequestsDB = data.dbcount;
 		   
-		    if (firstAJAX) {
-		       onLoadRequestsDB = ajaxRequestsDB;
-		       firstAJAX = false;
-		    }
+		      if (firstAJAX) {
+		         onLoadRequestsDB = ajaxRequestsDB;
+		         firstAJAX = false;
+		      }
 
-		    var unreadRequests = ajaxRequestsDB - onLoadRequestsDB;
+		      var unreadRequests = ajaxRequestsDB - onLoadRequestsDB;
 
-		    if (!unreadRequests) {
-		      $('title').text($initTitle);
-		    } else {
-		      $('title').text("(" + unreadRequests + ") unread");
-		    }
+		      if (!unreadRequests) {
+		        $('title').text($initTitle);
+		      } else {
+		        $('title').text("(" + unreadRequests + ") unread");
+		      }
+        } else {
+          sortingMode = false;
+        }
 
         /* AJAX get data in JSON like that:
 
@@ -70,20 +89,21 @@ function JsonRequests() {
          "reqlogs": [
                     {"date": "2016-09-16 09:20:19.098777+00:00", 
                      "path": "http://localhost:8000/request/", 
-                     "status_code": 200,
-                     "priority": 0,  
+                     "status_code": 200, 
+                     "priority": 0, 
                      "id": 701, 
                      "method": "GET"}, 
                     .....
                     {"date": "2016-09-16 09:20:12.355412+00:00", 
                      "path": "http://localhost:8000/admin/", 
                      "status_code": 200, 
-                     "priority": 7, 
+                     "priority": 1,
                      "id": 700, 
                      "method": "GET"}
                     ]
         }*/
 
+		    var newContent;
 		    for (var i = 1; i <= data.reqlogs.length; i++) 
 		      newContent += '<tr><td>' + i + '</td>' +
 		        '<td>' + data.reqlogs[i-1].method + '</td>' +
@@ -121,8 +141,9 @@ window.addEventListener("storage", function() {
       clearTimeout(checkReqTmr);
       $('title').text($initTitle);
       onLoadRequestsDB = ajaxRequestsDB;
-    } else {
-    checkReqTmr = setInterval(JsonRequests, 1500);
+    } else if ((localStorage.synchronizePages == 'false') && 
+               (localStorage.synchronizeInitTitle == 'false')) {
+      checkReqTmr = setInterval(JsonRequests, 1500);
   }
 }, false);
 
@@ -130,6 +151,8 @@ window.addEventListener("storage", function() {
 window.onload = function() {
   localStorage.setItem('synchronizePages', true);
   firstAJAX = true;
+  sortingURL = location.href;
+  sortingMode = false;
   JsonRequests();
 };
 
@@ -176,3 +199,46 @@ $(document).on('change', 'select', function() {
 			}
 		});
 });
+
+
+$('a.sort').click(function() {
+/* AJAX sorting requests by priority or date  */
+
+  $('a.sort span').hide();
+
+  if ($(this).is('#dateColumn')) {
+
+    $('span#defaultPriority').show();
+
+    if (sortingURL.contains("?date=0")) {
+      sortingURL = location.href + '?date=1';
+      $('span#oldestDate').show();
+    } else if(sortingURL.contains("?date=1")) {
+      sortingURL = location.href + '?date=0';
+      $('span#newestDate').show();
+    } else {
+      sortingURL = location.href + '?date=0';
+      $('span#newestDate').show();
+    }
+  } 
+
+  if ($(this).is('#priorityColumn')) {
+
+    $('span#defaultDate').show();
+
+    if (sortingURL.contains("?priority=0")) {
+      sortingURL = location.href + '?priority=1';
+      $('span#highPriority').show();
+    } else if(sortingURL.contains("?priority=1")) {
+      sortingURL = location.href + '?priority=0';
+      $('span#lowPriority').show();
+    } else {
+      sortingURL = location.href + '?priority=1';
+      $('span#highPriority').show();
+    }
+  }
+
+  JsonRequests();
+  return false;
+});
+
