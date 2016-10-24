@@ -57,3 +57,56 @@ class PriorityTest(TestCase):
 
         self.assertEqual(data['reqlogs'][0]['id'], 10)
         self.assertEqual(data['reqlogs'][0]['priority'], 1)
+
+    def test_requests_sorting_by_priority(self):
+        """
+        Test for requests sorting by priority in the template
+        """
+
+        self.client.login(username='admin', password='admin')
+
+        ''' Check if RequestContent has 10 requests with priority = 0 '''
+
+        response = self.client.get(reverse('hello:request'),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        data = json.loads(response.content.decode())
+        self.assertEqual(data['dbcount'], 10)
+
+        for i in range(10):
+            self.assertEqual(data['reqlogs'][i]['priority'], 0)
+
+        ''' Fill 5 requests in RequestContent with priority = 1 '''
+
+        pk_first = RequestContent.objects.first().pk
+
+        for i in range(pk_first, pk_first+5):
+            webrequest = RequestContent.objects.get(pk=i)
+            webrequest.priority = 1
+            webrequest.save()
+
+        ''' Make ajax sorting by high priority '''
+
+        response = self.client.get(reverse('hello:request') + '?priority=1',
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        data = json.loads(response.content.decode())
+        webrequests = RequestContent.objects.all().order_by('-priority')
+
+        for i in range(5):
+            self.assertEqual(data['reqlogs'][i]['priority'],
+                             webrequests[i].priority)
+            self.assertEqual(webrequests[i].priority, 1)
+
+        ''' Make ajax sorting by low priority '''
+
+        response = self.client.get(reverse('hello:request') + '?priority=0',
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        data = json.loads(response.content.decode())
+        webrequests = RequestContent.objects.all().order_by('priority')
+
+        for i in range(5):
+            self.assertEqual(data['reqlogs'][i]['priority'],
+                             webrequests[i].priority)
+            self.assertEqual(webrequests[i].priority, 0)
