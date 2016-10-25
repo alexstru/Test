@@ -22,8 +22,6 @@
   {% endif %}
 </div>
 
-<br><br>
-
 <div class="row bio">
  <div class="col-md-2 smallcol">First name:</div>
  <div class="col-md-2">{{ bio.first_name }}</div> 
@@ -53,28 +51,30 @@
 
 <div class="row bio">
  <div class="col-md-4" id="homephoto">
-      <br>
+      
       {% if photo_exists %}
 			  <img src="{{ bio.photo.url }}" height="200" width="200"/>
       {% else %}
         <img src='{{ STATIC_URL }}img/user_default.png' height="200" width="200">
       {% endif %}
 
-      <br><br><br><br>
+      <div id="homebuttons">
       <a id="RequestsButton" class="btn btn-primary btn-xs" 
          href="{% url 'hello:request' %}" target="_blank">Requests</a>
 
       <a class="btn btn-primary btn-xs" 
          href="{% url 'admin:hello_modelschange_changelist' %}"
          target="_blank">Models changes</a>
+      </div>
 
  </div>
  <div class="col-md-8">
-    <br><b>Other contacts:</b><br>
-    <p id="contacts_text">{{ bio.contacts }}</p>
-    <br>
-    <br><b>Bio:</b><br>
-    <p id="bio_text">{{bio.bio}}</p>
+    <p class="bio_contacts"><b>Other contacts:</b><br>
+       {{ bio.contacts }}
+    </p>
+    <p class="bio_contacts"><b>Bio:</b><br>
+       {{bio.bio}}
+    </p>
  </div>
 </div>
 
@@ -82,7 +82,7 @@
 
 <div class="row">
    <div class="col-md-8 alert alert-warning">
-	 There is no profile in the db<br></div>
+	 There is no profile in the db</div>
    <div class="col-md-4"></div>
 </div>
 
