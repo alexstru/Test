@@ -19,51 +19,6 @@
 },
 {
     "pk": 1, 
-    "model": "south.migrationhistory", 
-    "fields": {
-        "applied": "2016-09-29T12:09:20.234Z", 
-        "app_name": "hello", 
-        "migration": "0001_initial"
-    }
-},
-{
-    "pk": 2, 
-    "model": "south.migrationhistory", 
-    "fields": {
-        "applied": "2016-09-29T12:10:03.829Z", 
-        "app_name": "hello", 
-        "migration": "0002_auto__add_requestcontent"
-    }
-},
-{
-    "pk": 3, 
-    "model": "south.migrationhistory", 
-    "fields": {
-        "applied": "2016-10-03T08:35:40.600Z", 
-        "app_name": "hello", 
-        "migration": "0003_auto__add_field_aboutme_photo"
-    }
-},
-{
-    "pk": 4, 
-    "model": "south.migrationhistory", 
-    "fields": {
-        "applied": "2016-10-07T10:42:04.544Z", 
-        "app_name": "hello", 
-        "migration": "0004_auto__add_modelschange"
-    }
-},
-{
-    "pk": 5, 
-    "model": "south.migrationhistory", 
-    "fields": {
-        "applied": "2016-10-11T08:23:33.665Z", 
-        "app_name": "hello", 
-        "migration": "0005_auto__add_field_requestcontent_priority"
-    }
-},
-{
-    "pk": 1, 
     "model": "hello.aboutme", 
     "fields": {
         "bio": "I want to be Django Developer \r\nDjango junior is my first aim.", 
@@ -185,32 +140,6 @@
         "priority": 0,
         "method": "GET", 
         "status_code": 200
-    }
-},
-{
-    "pk": 1, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2016-09-29T11:43:50.444Z", 
-        "object_repr": "Oleksiy Strutynskyy", 
-        "object_id": "1", 
-        "change_message": "", 
-        "user": 1, 
-        "content_type": 8
-    }
-},
-{
-    "pk": 2, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2016-09-29T11:48:12.138Z", 
-        "object_repr": "/request/ 2016-09-29 11:48:12.136720+00:00", 
-        "object_id": "1", 
-        "change_message": "", 
-        "user": 1, 
-        "content_type": 9
     }
 }
 ]
