@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+
+{% block title %}{% endblock title %}
+{% block auth %}{% endblock %}
+{% block body_class %}main-area{% endblock %}
+
+
+{% block content %}
+
+    {% block head_content %}<h2>Login</h2>{% endblock head_content %}
+
+    <br><br>
+
+    {% if form.errors %}
+        <p>Your username and password didn't match. Please try again.</p>
+        <br><br>
+    {% endif %}
+
+    <form method="post" action="{{ app_path }}">
+        {% csrf_token %}
+    <div class="row-data">
+      <div class="col-md-5">{{ form.username|bootstrap_horizontal:'col-lg-4'  }}</div>
+      <div class="col-md-5">{{ form.password|bootstrap_horizontal:'col-lg-4' }}</div>
+      <div class="col-md-2">
+        <input class="btn btn-small btn-primary" type="submit" value="login"/>
+      </div>
+    </div>
+
+    <br><br>
+
+    <input type="hidden" name="next" value="{{ '/' }}"/>
+
+    <br><br><br>
+    </form>
+
+
+
+{% endblock %}
+
+

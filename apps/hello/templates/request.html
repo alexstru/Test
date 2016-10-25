@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block meta_title %}<title id="requests_title">Requests</title>{% endblock meta_title %}
+
+{% block menu %}{% endblock %}
+
+{% block content %}
+
+{% csrf_token %}
+
+{% if object_list %}
+
+<br>
+<div class=" well col-md-12" id="content-column">
+<br>
+
+			<table class="table table-condensed">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Method</th>
+						<th>Url</th>
+						<th>Status Code</th>
+						<th>
+								<a class="sort" id="dateColumn" href="">
+								<span id="defaultDate">Date&amp;Time</span>
+								<span id="oldestDate" style="display: none;">Date&amp;Time&uarr;</span>
+                <span id="newestDate" style="display: none;">Date&amp;Time&darr;</span>
+								</a>
+						</th>
+						<th>
+								<a class="sort" id="priorityColumn" href="">
+								<span id="defaultPriority">Priority</span>
+								<span id="highPriority" style="display: none;">High Priority&uarr;</span>
+                <span id="lowPriority" style="display: none;">Low Priority&darr;</span>
+								</a>
+
+						</th>
+					</tr>
+				</thead>
+
+				<tbody id="requests-content">
+
+					{% for request in object_list %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>{{ request.method }}</td>
+						<td>{{ request.path }}</td>
+						<td>{{ request.status_code }}</td>
+						<td>{{ request.date }}</td>
+						<td style="text-align: center;">
+									<a id="priority_{{ request.id }}">{{ request.priority }}</a>
+						</td>
+					</tr>
+					{% endfor %}
+
+				</tbody>
+			</table>
+
+</div>
+
+{% else %}
+
+<div class="row">
+   <br><br>
+   <div class="col-md-8 alert alert-warning">
+	 There is no entries in the db yet...<br></div>
+   <div class="col-md-4"></div>
+</div>
+
+{% endif %}
+
+{% endblock content %}
+
+{% block footer %}Requests{% endblock footer %}
+
+{% block extra_js %}
+  <script src="{% static "js/requests.js" %}"></script>
+{% endblock extra_js %}

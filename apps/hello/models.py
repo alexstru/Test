@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from PIL import Image
 
 
 class AboutMe(models.Model):
@@ -45,5 +46,44 @@ class AboutMe(models.Model):
         blank=True,
         verbose_name=u"Additional contacts")
 
+    photo = models.ImageField(
+        upload_to='photo',
+        null=False,
+        blank=True,
+        verbose_name=u"Фото")
+
     def __unicode__(self):
         return u"%s %s" % (self.first_name, self.last_name)
+
+    def save(self, *args, **kwargs):
+        ''' resize profile image to (200, 200) '''
+
+        size = 200, 200
+        super(AboutMe, self).save(*args, **kwargs)
+        if self.photo:
+            filename = self.photo.path
+            image = Image.open(filename)
+            image.thumbnail(size, Image.ANTIALIAS)
+            image.save(filename)
+
+
+class RequestContent(models.Model):
+    ''' RequestContent Model	'''
+
+    method = models.CharField(max_length=7)
+    path = models.TextField('Path', max_length=255)
+    date = models.DateTimeField(auto_now_add=True)
+    status_code = models.IntegerField('Status code', max_length=3)
+    priority = models.IntegerField(max_length=1, default=0)
+
+    def __unicode__(self):
+        return u"%s %s" % (self.path, self.date)
+
+
+class ModelsChange(models.Model):
+    ''' Model with entries about creation/updating/deletion
+    in AboutMe/RequestContent Models '''
+
+    model = models.CharField(max_length=10)
+    datetime = models.DateTimeField(auto_now=True, auto_now_add=True)
+    action = models.CharField(max_length=10)
