@@ -74,6 +74,7 @@ class RequestContent(models.Model):
     path = models.TextField('Path', max_length=255)
     date = models.DateTimeField(auto_now_add=True)
     status_code = models.IntegerField('Status code', max_length=3)
+    priority = models.IntegerField(max_length=1, default=0)
 
     def __unicode__(self):
         return u"%s %s" % (self.path, self.date)

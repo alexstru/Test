@@ -32,13 +32,10 @@ body {
   font-weight: bold;
 }
 
-#bio_text {
+.bio_contacts {
   width: 230px;  
+  margin-top: 2em;
 } 
-
-#contacts_text {
-  width: 100px;  
-}
 
 .main-area {
     padding-left: 60px;
@@ -77,10 +74,16 @@ body {
 }
 
 .user-auth {
-width: 100%;
-text-align: right;
+  width: 100%;
+  margin-bottom: 3em;
+  text-align: right;
 }
 
 #homephoto {
   width: 330px;
+  padding-top: 1em;
+}
+
+#homebuttons {
+  margin-top: 4em;
 }
