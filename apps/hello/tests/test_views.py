@@ -99,9 +99,13 @@ class TestRequestsDataView(TestCase):
         for i in range(11):
             response = self.client.get(reverse('hello:request'))
 
+        request = RequestFactory().get('hello:request')
+        request_path = request.build_absolute_uri()
+
         # check for 10 objects in context
         self.assertTrue('object_list' in response.context)
         self.assertEqual(len(response.context['object_list']), 10)
+        self.assertContains(response, request_path, 10, 200)
 
     def test_no_entries_requestcontent_in_db(self):
         """ check correct reaction if there are
