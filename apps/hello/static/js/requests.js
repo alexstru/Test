@@ -151,13 +151,13 @@ window.addEventListener("storage", function() {
 }, false);
 
 
-window.onload = function() {
+$(document).ready(function(){
   localStorage.setItem('synchronizePages', true);
   firstAJAX = true;
   sortingURL = location.href;
   sortingMode = false;
   JsonRequests();
-};
+});
 
 
 window.onfocus = function() {
