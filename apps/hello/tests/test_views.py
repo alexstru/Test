@@ -1,11 +1,9 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
 from django.core.urlresolvers import reverse
 from apps.hello.models import AboutMe, RequestContent
 import json
 from django.db.models import ImageField
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
-import os
+from apps.hello.utils import GetTestImage
 
 
 NORMAL = {
@@ -101,9 +99,13 @@ class TestRequestsDataView(TestCase):
         for i in range(11):
             response = self.client.get(reverse('hello:request'))
 
+        request = RequestFactory().get('hello:request')
+        request_path = request.build_absolute_uri()
+
         # check for 10 objects in context
         self.assertTrue('object_list' in response.context)
         self.assertEqual(len(response.context['object_list']), 10)
+        self.assertContains(response, request_path, 10, 200)
 
     def test_no_entries_requestcontent_in_db(self):
         """ check correct reaction if there are
@@ -122,6 +124,9 @@ class TestRequestsDataView(TestCase):
             as new requests come in
         """
         RequestContent.objects.all().delete()
+
+        """ Check if there are empty ajax-data in the request.html """
+
         response = self.client.get(reverse('hello:request'),
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
@@ -130,6 +135,10 @@ class TestRequestsDataView(TestCase):
         self.assertEqual(data['dbcount'], 0)
         self.assertEqual(data['reqlogs'], [])
 
+        """ Make one request and check ajax-data in the request.html """
+
+        request_path = RequestFactory().get('hello:home').build_absolute_uri()
+
         self.client.get(reverse('hello:home'))
         response = self.client.get(reverse('hello:request'),
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -137,7 +146,7 @@ class TestRequestsDataView(TestCase):
         data = json.loads(response.content.decode())
 
         self.assertEqual(data['dbcount'], 1)
-        self.assertTrue('http://testserver/' in data['reqlogs'][0]['path'])
+        self.assertTrue(data['reqlogs'][0]['path'] in request_path)
         self.assertContains(response, '"method": "GET"', 1, 200)
 
 
@@ -152,9 +161,6 @@ class ProfileEditViewTests(TestCase):
 
         self.fields_list = ('first_name', 'last_name', 'email',
                             'jabber', 'skype', 'photo', 'birthday')
-
-        IMG_ROOT = os.path.join(settings.BASE_DIR, 'apps/hello/static/img/')
-        self.photo = open(IMG_ROOT + 'test.png', 'rb')
 
     def test_form_in_edit_page(self):
         """ Test html on the edit profile page """
@@ -200,7 +206,7 @@ class ProfileEditViewTests(TestCase):
                      'max@gmail.com',
                      'max_jab',
                      'max_sk',
-                     SimpleUploadedFile(self.photo.name, self.photo.read()),
+                     GetTestImage('test.png'),
                      '2016-01-01')
 
         data = dict(zip(self.fields_list, data_list))

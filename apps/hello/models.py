@@ -74,6 +74,16 @@ class RequestContent(models.Model):
     path = models.TextField('Path', max_length=255)
     date = models.DateTimeField(auto_now_add=True)
     status_code = models.IntegerField('Status code', max_length=3)
+    priority = models.IntegerField(max_length=1, default=0)
 
     def __unicode__(self):
         return u"%s %s" % (self.path, self.date)
+
+
+class ModelsChange(models.Model):
+    ''' Model with entries about creation/updating/deletion
+    in AboutMe/RequestContent Models '''
+
+    model = models.CharField(max_length=10)
+    datetime = models.DateTimeField(auto_now=True, auto_now_add=True)
+    action = models.CharField(max_length=10)
