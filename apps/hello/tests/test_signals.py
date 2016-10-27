@@ -10,6 +10,7 @@ class SignalsTest(TestCase):
     Check signal processor for save log
     about creation/updating/deletion models objects
     """
+    fixtures = ['test_data.json']
 
     def test_creation_log(self):
         """
