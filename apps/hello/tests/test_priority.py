@@ -9,6 +9,7 @@ class PriorityTest(TestCase):
     """
     Tests priority field in RequestContent model
     """
+    fixtures = ['test_data.json']
 
     def test_saving_priority(self):
         """

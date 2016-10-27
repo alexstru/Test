@@ -5,10 +5,11 @@ from django.utils.six import StringIO
 from django.db.models import get_models
 
 
-class CouuntObjectsTest(TestCase):
+class CountObjectsTest(TestCase):
     """ Check print_objects_count command to print models
         and calculate objects amount
     """
+    fixtures = ['test_data.json']
 
     def test_print_objects_count_command(self):
         """ Check the command to print models and
