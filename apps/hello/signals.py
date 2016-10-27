@@ -1,33 +1,30 @@
-from apps.hello.models import ModelsChange, AboutMe, RequestContent
-from django.contrib.sessions.models import Session
-from django.contrib.admin.models import LogEntry
+from apps.hello.models import ModelsChange
+from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 
-MODELS = [AboutMe, RequestContent, Session, LogEntry]
+IGNORE_MODELS = [ContentType, ModelsChange]
 
 
 @receiver(post_save)
 def model_save_handler(sender, created, **kwargs):
 
-    if sender not in MODELS:
+    if sender in IGNORE_MODELS:
         return
 
     action = "CREATE" if created else "UPDATE"
+    log = kwargs['instance']
     info = ""
 
     if sender.__name__ == "AboutMe":
-        profile = kwargs['instance']
-        info = ": " + profile.first_name + " " + profile.last_name
+        info = ": " + log.first_name + " " + log.last_name
 
     if sender.__name__ == "RequestContent":
-        reqlog = kwargs['instance']
-        info = ": " + reqlog.path
+        info = ": " + log.path
 
     if sender.__name__ == "Session":
-        seslog = kwargs['instance']
-        info = ": " + seslog.session_key
+        info = ": " + log.session_key
 
     if sender.__name__ == "LogEntry":
         log = kwargs['instance']
@@ -44,7 +41,7 @@ def model_save_handler(sender, created, **kwargs):
 @receiver(post_delete)
 def model_delete_handler(sender, **kwargs):
 
-    if sender not in MODELS:
+    if sender in IGNORE_MODELS:
         return
 
     models_changes = ModelsChange.objects.create(
