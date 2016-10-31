@@ -50,7 +50,7 @@ class AboutMe(models.Model):
         upload_to='photo',
         null=False,
         blank=True,
-        verbose_name=u"Фото")
+        verbose_name=u"Photo")
 
     def __unicode__(self):
         return u"%s %s" % (self.first_name, self.last_name)

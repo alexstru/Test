@@ -47,7 +47,18 @@ $('input[name="photo-clear"]').click(function() {
 }); 
 
 
+function customizePhotoDiv() {
+  $photoDiv = $('input[name="photo"]').parent('div');
+  $photoDiv.find('a').hide(); // hide imagelink
+
+  $photoDiv.contents().filter(function() {
+    return this.nodeType===3; // remove text from div
+  }).remove();
+}
+
+
 $(document).ready(function() {
+  customizePhotoDiv();
 
 	// Set options for ajaxForm
 	var options = {
