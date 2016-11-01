@@ -14,5 +14,5 @@ class DatePickerWidgetTest(TestCase):
         response = self.admin.get(reverse('hello:edit', kwargs={'pk': 1}))
         self.assertContains(response, '//code.jquery.com/ui/1.11.4/'
                                       'themes/smoothness/jquery-ui.css')
-        self.assertContains(response, 'js/jquery-ui.min.js')
+        self.assertContains(response, 'js/datewidget/jquery-ui.min.js')
         self.assertContains(response, "$('#id_birthday').datepicker(")

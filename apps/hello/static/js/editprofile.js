@@ -60,8 +60,40 @@ function customizePhotoDiv() {
 $(document).ready(function() {
   customizePhotoDiv();
 
+  var config = {         /* http://www.formvalidator.net */
+    form : 'form',
+    validate : {
+      '#id_first_name, #id_last_name' : {
+        validation : 'length',
+        length : 'min3'
+      },
+      '#id_email, #id_jabber' : {
+        validation : 'email'
+      },
+      '#id_birthday' : {
+        validation : 'birthdate',
+        'error-msg' : 'Date should be younger than today and not older than 120 years'
+      }
+    },
+    onElementValidate : function(valid, $el, $form, errorMess) {
+       $rowDiv = $el.parents().eq(3);
+       if(valid) {
+         $rowDiv.removeClass('errorspacing');
+       } else {
+         $rowDiv.addClass('errorspacing');
+       }
+    }
+  };
+
+  $.validate({
+     modules : 'jsconf, date',
+     onModulesLoaded : function() {
+       $.setupValidation(config);
+     }
+  }); 
+
 	// Set options for ajaxForm
-	var options = {
+	var options = { 
         beforeSubmit: function(){
           blockPage();
         },

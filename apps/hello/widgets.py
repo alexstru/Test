@@ -12,8 +12,8 @@ class DatePickerWidget(forms.DateInput):
         '''
 
         js = (
-            staticfiles_storage.url('js/jquery-1.11.3.js'),
-            staticfiles_storage.url('js/jquery-ui.min.js'),
+            staticfiles_storage.url('js/datewidget/jquery-1.11.3.js'),
+            staticfiles_storage.url('js/datewidget/jquery-ui.min.js'),
         )
         css = {
             'all': (
