@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from apps.hello.models import AboutMe, RequestContent
 import json
 from django.db.models import ImageField
-from apps.hello.utils import GetTestImage
+from apps.hello.utils import GetTestImage, RemoveTestImages
 
 
 NORMAL = {
@@ -221,3 +221,5 @@ class ProfileEditViewTests(TestCase):
         for field in self.fields_list[:-2]:
             self.assertEqual(profile.serializable_value(field),
                              data[field])
+
+        RemoveTestImages()

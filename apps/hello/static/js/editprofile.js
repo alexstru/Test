@@ -47,10 +47,56 @@ $('input[name="photo-clear"]').click(function() {
 }); 
 
 
+function customizePhotoDiv() {
+  $photoDiv = $('input[name="photo"]').parent('div');
+  $photoDiv.find('a').hide(); // hide imagelink
+
+  $photoDiv.contents().filter(function() {
+    return this.nodeType===3; // remove text from div
+  }).remove();
+}
+
+
 $(document).ready(function() {
+  customizePhotoDiv();
+
+  /*  Set configuration to validate form before submit 
+      http://www.formvalidator.net */
+
+  var config = {         
+    form : 'form',
+    validate : {
+      '#id_first_name, #id_last_name' : {
+        validation : 'length',
+        length : 'min3'
+      },
+      '#id_email, #id_jabber' : {
+        validation : 'email'
+      },
+      '#id_birthday' : {
+        validation : 'birthdate',
+        'error-msg' : 'Date should be younger than today and not older than 120 years'
+      }
+    },
+    onElementValidate : function(valid, $el, $form, errorMess) {
+       $rowDiv = $el.parents().eq(3);
+       if(valid) {
+         $rowDiv.removeClass('errorspacing');
+       } else {
+         $rowDiv.addClass('errorspacing');
+       }
+    }
+  };
+
+  $.validate({
+     modules : 'jsconf, date',
+     onModulesLoaded : function() {
+       $.setupValidation(config);
+     }
+  }); 
 
 	// Set options for ajaxForm
-	var options = {
+	var options = { 
         beforeSubmit: function(){
           blockPage();
         },
@@ -77,32 +123,24 @@ $(document).ready(function() {
           var errors = JSON.parse(msg.responseText);
 
           if (errors['Image']) {
-            message = "<div id='failmessage' class='col-xs-12'><b>" +
-                       errors['Image'] + "</b></div>";
+            console.log(errors['Image']);
           } else {
             message = "<div id='failmessage' class='col-xs-12'>" +
-                      "<b>Check errors, please!</b></div>";
+                      "<b>Check errors, please!</b><br><br>";
+
+            var fields = ['first_name', 'last_name',  'birthday',
+                          'email', 'jabber', 'skype'];
+
+            $.each(fields, function( index, field ) {
+              if(errors[field]) {
+                message += field+ ': ' +errors[field]+ '<br>'
+              }
+            });
+
+            message += '</div>';
+            $('.loader').before(message);
+            $('#failmessage').after("<p id='after_fail_empty_string'>&nbsp</p>");
           }
-
-          $('.loader').before(message);
-          $('#failmessage').after("<p id='after_fail_empty_string'>&nbsp</p>");
-
-          var fields = ['first_name', 'last_name',  'birthday',
-                        'email', 'jabber', 'skype'];
-
-          var $idElement, $labelElement;
-
-          $.each(fields, function( index, field ) {
-            $idElement = $('#id_' + field);
-            $labelElement = $("label[for='"+$idElement.attr('id')+"']");
-            $idElement.parent('div').prepend('<span>&nbsp</span>');
-
-            if(errors[field]) {
-              $idElement.parent('div').prepend('<span>'+errors[field]+'</span>');
-              $labelElement.prepend('<span>*</span>');
-              $labelElement.parent('div').addClass('has-error');
-            }
-          });
         }
   };
 

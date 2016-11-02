@@ -14,12 +14,9 @@
 
 {% block menu %}{% endblock %}
 
+{% block content %}     
 
-{% block content %}
-<div class="col-xs-8" id="content-column">      
-
-<br><br><br>
-<div class="loader"><img src="{% static 'img/loader.gif' %}"></div>
+<div class="loader spacing4em"><img src="{% static 'img/loader.gif' %}"></div>
 
     <form id="ajaxform" method="POST" enctype="multipart/form-data" \
           action="{% url "hello:edit" object.id %}"> 
@@ -28,20 +25,20 @@
     <input id="backurl" type="hidden" value="{% url "hello:home" %}" />
 
         <div class="row-data">
-            <div class="col-md-6">{{ form.first_name|bootstrap_horizontal:'col-lg-4' }}</div>
-            <div class="col-md-6">{{ form.email|bootstrap_horizontal:'col-lg-3' }}</div>
-        </div><br><br>
-        <div class="row-data">
-            <div class="col-md-6">{{ form.last_name|bootstrap_horizontal:'col-lg-4' }}</div>
-            <div class="col-md-6">{{ form.jabber|bootstrap_horizontal:'col-lg-3' }}</div>
-        </div><br><br>
-        <div class="row-data">
-            <div class="col-md-6">{{ form.birthday|bootstrap_horizontal:'col-lg-4' }}</div>
-            <div class="col-md-6">{{ form.skype|bootstrap_horizontal:'col-lg-3' }}</div>
-        </div>
+            <div class="col-md-4">{{ form.first_name|bootstrap_horizontal:'col-lg-4' }}</div>
+            <div class="col-md-4">{{ form.email|bootstrap_horizontal:'col-lg-3' }}</div>
+        </div><br>
+        <div class="row-data spacing2em">
+            <div class="col-md-4">{{ form.last_name|bootstrap_horizontal:'col-lg-4' }}</div>
+            <div class="col-md-4">{{ form.jabber|bootstrap_horizontal:'col-lg-3' }}</div>
+        </div><br>
+        <div class="row-data spacing2em">
+            <div class="col-md-4">{{ form.birthday|bootstrap_horizontal:'col-lg-4' }}</div>
+            <div class="col-md-4">{{ form.skype|bootstrap_horizontal:'col-lg-3' }}</div>
+        </div><br>
 
-        <div class="row-data">
-            <div class="col-md-6">
+        <div class="row-data spacing4em">
+            <div class="col-md-4">
                 <p>{{ form.photo|bootstrap_horizontal:'col-lg-4' }}</p>
 
                 {% if photo_exists %}
@@ -57,18 +54,17 @@
                 <a class="btn btn-small btn-primary" href="{% url 'hello:home' %}">Back</a>
             </div>
 
-            <div class="col-md-6"><br>
+            <div class="col-md-4"><br>
                 {{ form.contacts|bootstrap }}
                 {{ form.bio|bootstrap }}
             </div>
         </div>
     </form>
 
-</div>
-
 {% endblock content %}
 
 {% block extra_js %}
   <script src="{% static "js/jquery.form.min.js" %}"></script>
+  <script src="{% static "js/formvalidator/jquery.form-validator.min.js" %}"></script>
   <script src="{% static "js/editprofile.js" %}"></script>
 {% endblock extra_js %}

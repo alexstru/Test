@@ -87,3 +87,20 @@ body {
 #homebuttons {
   margin-top: 4em;
 }
+
+.picture {
+  margin-top: 1em;
+}
+
+.spacing2em {
+  margin-top: 2em; /* interval between the rows in edit.html */
+}
+
+.spacing4em {
+  margin-top: 4em; /* interval between the rows in edit.html */
+}
+
+.errorspacing {
+  padding-bottom: 2em; /* add interval when input has an error */
+}
+

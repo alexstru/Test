@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from .models import AboutMe
 from django import forms
 from widgets import DatePickerWidget
+from datetime import date, datetime
 
 
 class ProfileUpdateForm(ModelForm):
@@ -27,3 +28,14 @@ class ProfileUpdateForm(ModelForm):
         attrs={'class': 'datepicker form_widget'}
         )
       )
+
+    def clean_birthday(self):
+        birthday = self.cleaned_data['birthday']
+
+        if birthday < date(1900, 1, 1):
+            raise forms.ValidationError("Valid years: 1900-2016.")
+
+        if birthday > datetime.now().date():
+            raise forms.ValidationError("Date is older than today.")
+
+        return birthday
