@@ -3,6 +3,7 @@ from PIL import Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 import os
+import glob
 
 
 def GetTestImage(imagefile, mode='simple'):
@@ -19,3 +20,13 @@ def GetTestImage(imagefile, mode='simple'):
             return Image.open(IMG_ROOT + imagefile)
         else:
             return Image.open(imagefile)
+
+
+def RemoveTestImages():
+    path = os.path.join(os.path.dirname(settings.BASE_DIR),
+                        'uploads', 'photo', '*.png')
+
+    for f in glob.glob(path):
+        filename = os.path.basename(f)
+        if filename.startswith("test"):
+            os.remove(f)

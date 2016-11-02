@@ -136,3 +136,39 @@ SOUTH_TESTS_MIGRATE = False
 FIXTURE_DIRS = (
     os.path.join(BASE_DIR, 'apps', 'hello', 'fixtures'),
 )
+
+LOG_FILE = os.path.join(BASE_DIR, 'errors.log')
+LOG_FORMAT = '\r %(levelname)s %(asctime)s %(module)s: %(message)s\n\r'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': LOG_FORMAT
+        },
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': LOG_FILE,
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['null'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'apps.hello.views': {
+            'handlers': ['file'],
+            'level': 'INFO',
+        }
+    }
+}

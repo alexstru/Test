@@ -9,6 +9,10 @@ from urlparse import urlparse
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def check_no_image_in_db(model_instance):
@@ -149,6 +153,10 @@ class ProfileUpdateView(UpdateView):
         if file_path:
             photo_exists = check_no_image_in_filesystem(file_path)
 
+        if not photo_exists:
+            message = "File doesn't exist:  " + self.object.photo.url
+            logger.exception(message)
+
         context['photo_exists'] = photo_exists
         return context
 
@@ -189,6 +197,7 @@ class ProfileUpdateView(UpdateView):
                              self).post(request, *args, **kwargs)
             except IOError:
                 message = "File doesn't exist:  " + self.object.photo.url
+                logger.exception(message)
                 return HttpResponseBadRequest(
                           json.dumps({'Image': message}),
                           content_type="application/json")
