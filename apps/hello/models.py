@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from smartfields import fields
-from smartfields.dependencies import FileDependency
-from smartfields.processors import ImageProcessor
-from south.modelsinspector import add_introspection_rules
+from PIL import Image
 
 
 class AboutMe(models.Model):
@@ -49,18 +46,25 @@ class AboutMe(models.Model):
         blank=True,
         verbose_name=u"Additional contacts")
 
-    photo = fields.ImageField(
+    photo = models.ImageField(
         upload_to='photo',
         null=False,
         blank=True,
-        verbose_name=u"Photo",
-        dependencies=[
-            FileDependency(processor=ImageProcessor(
-            scale={'max_width': 200, 'max_height': 200}))
-        ])
+        verbose_name=u"Photo")
 
     def __unicode__(self):
         return u"%s %s" % (self.first_name, self.last_name)
+
+    def save(self, *args, **kwargs):
+        ''' resize profile image to (200, 200) '''
+
+        size = 200, 200
+        super(AboutMe, self).save(*args, **kwargs)
+        if self.photo:
+            filename = self.photo.path
+            image = Image.open(filename)
+            image.thumbnail(size, Image.ANTIALIAS)
+            image.save(filename)
 
 
 class RequestContent(models.Model):
@@ -83,6 +87,3 @@ class ModelsChange(models.Model):
     model = models.CharField(max_length=10)
     datetime = models.DateTimeField(auto_now=True, auto_now_add=True)
     action = models.CharField(max_length=10)
-
-
-add_introspection_rules([], ["^smartfields\.fields\.ImageField"])

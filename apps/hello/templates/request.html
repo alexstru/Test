@@ -4,6 +4,10 @@
 
 {% block meta_title %}<title id="requests_title">Requests</title>{% endblock meta_title %}
 
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static "css/slider.css" %}">
+{% endblock extra_head %}
+
 {% block menu %}{% endblock %}
 
 {% block content %}
@@ -13,7 +17,9 @@
 {% if object_list %}
 
 <br>
-<div class=" well col-md-12" id="content-column">
+  <div id="slider"></div>
+  <a id="btnSetPriority" class="btn btn-primary btn-xs" style="display: none;">Set</a>
+  <a id="btnBackPriority" class="btn btn-primary btn-xs" style="display: none;">Back</a>
 <br>
 
 			<table class="table table-condensed">
@@ -59,7 +65,7 @@
 				</tbody>
 			</table>
 
-</div>
+
 
 {% else %}
 
@@ -77,5 +83,6 @@
 {% block footer %}Requests{% endblock footer %}
 
 {% block extra_js %}
+  <script src="{% static "js/bootstrap-slider.js" %}"></script>
   <script src="{% static "js/requests.js" %}"></script>
 {% endblock extra_js %}
