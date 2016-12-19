@@ -6,6 +6,9 @@
 {% block meta_title %}<title>User chat</title>{% endblock meta_title %}
 
 {% block extra_head %}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link href='//fonts.googleapis.com/css?family=Ubuntu+Mono:400,700|Ubuntu:400,700' rel='stylesheet' type='text/css' />
     <link type="text/css" rel="stylesheet" href="{% static 'css/dialogs.css' %}"/>
@@ -20,21 +23,21 @@
       <div class="row spacing2em">
 
         <div class="col-md-2">
-          <b>Dialogs</b><br>
+          <p class="bold">All Dialogs</p>
 
           <div id="threads">
-          {% for thread in threads %}
-          <a class="thread-link" 
-          data-thread="{{ thread.id }}"
-          data-partner="{{ thread.partner }}"
-          data-lastid="{{ thread.lastid }}">{{ thread.partner }} ({{ thread.lastid }})</a><br>
-          {% empty %}
-          <p>There are no dialogs yet</p>
-          {% endfor %}
+            {% for thread in threads %}
+              <a class="thread-link" 
+              data-thread="{{ thread.id }}"
+              data-partner="{{ thread.partner }}"
+              data-lastid="{{ thread.lastid }}">{{ thread.partner }} ({{ thread.lastid }})</a><br>
+            {% empty %}
+              <p>There are no dialogs yet</p>
+            {% endfor %}
           </div>
 
           <p><b>Current Dialog with:</b></p>
-          <p id="currentDialog">Not selected</p>
+          <p id="currentDialog" data-thread="0">Not selected</p>
 
         </div>
 
@@ -66,10 +69,10 @@
                    data-sender="{{ request.user.username }}"/>
 
             <span class="input-group-btn">
-            <button class="btn btn-default" id="btn_send" type="button">
-            <i class="glyphicon glyphicon-send hidden-lg"></i>
-            <span class="visible-lg"><i class="glyphicon glyphicon-send"></i> Send</span>
-            </button>
+              <button class="btn btn-default" id="btn_send" type="button">
+                <i class="glyphicon glyphicon-send hidden-lg"></i>
+                <span class="visible-lg"><i class="glyphicon glyphicon-send"></i> Send</span>
+              </button>
             </span>
         </div>
 
@@ -79,5 +82,6 @@
 
 {% block extra_js %}
 <script src="{% static "js/bootstrap.min.js" %}"></script>
+<script src="{% static "js/underscore-min.js" %}"></script>
 <script src="{% static "js/dialogs.js" %}"></script>
 {% endblock extra_js %}

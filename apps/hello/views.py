@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import AboutMe, RequestContent, Thread
+from .models import AboutMe, RequestContent, Thread, Message
 from django.views.generic import ListView, UpdateView
-from .forms import ProfileUpdateForm, RequestUpdateForm
+from .forms import ProfileUpdateForm, RequestUpdateForm, MessageForm
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 import json
 import utils
@@ -11,9 +11,10 @@ from django.core.urlresolvers import reverse
 import logging
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 import os
 from django.contrib.auth.models import User
-from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 
@@ -232,7 +233,6 @@ class ProfileUpdateView(UpdateView):
 
 
 @login_required
-@csrf_exempt
 def userchat(request):
     threads = Thread.objects.filter(
         participants=request.user
@@ -253,3 +253,74 @@ def userchat(request):
                     'threads': threads,
                     'users': User.objects.exclude(username=request.user)
                   })
+
+
+@require_POST
+def send(request):
+    """
+    This view is called when the client wants to send a message.
+    If the message is saved successfully, 
+    200 OK with a body containing 'OK' is returned.
+    If it fails, json is returned with a body describing the fault.
+    """
+    # Parse and validate text.
+    form = MessageForm(request.POST)
+
+    if not form.is_valid():
+        return HttpResponse(json.dumps(form.errors),
+                                      content_type="application/json")
+
+    sender_id = int(request.POST['sender_id'])
+    mode = request.POST['mode']
+    prev_thread_id = request.POST['prev_thread_id']
+
+    # Define dialog members
+    sender = User.objects.get(id=sender_id)
+    recipient = User.objects.get(username=request.POST['recipient'])
+
+    # Get the thread corresponding to the dialog members
+    thread_queryset = Thread.objects.filter(participants=recipient).\
+                                     filter(participants=sender)
+    new_thread = ''
+    if thread_queryset.exists():
+        thread = thread_queryset[0]
+    else:
+        thread = Thread.objects.create()
+        thread.participants.add(sender, recipient)
+        new_thread = 'new'
+
+    # Make the new message, and save it in the backend.
+    msg = Message()
+    msg.sender_id = sender_id
+    msg.thread_id = thread.id
+    msg.text = form.cleaned_data['text']
+    msg.save()
+
+    # Remember last message ID in the thread
+    thread.lastid = msg.id
+    thread.save()
+    
+    # If user don`t change dialog and just sends a message to the current one
+    if mode == 'currentDialog':
+        return HttpResponse('OK', content_type='text/plain; charset=UTF-8')
+
+    '''
+    If the user doesn't begin first dialog 
+    and just switches to another dialog
+    then is necessary to stop the ongoing dialog
+    '''
+    if prev_thread_id != '0':
+        prev_thread = Thread.objects.get(id=prev_thread_id)
+        prev_thread.stop = True
+        prev_thread.save()
+
+    # update QuerySet of threads with current user
+    threads = Thread.objects.\
+                     filter(participants=sender).\
+                     order_by("-lastid")
+
+    # prepare data to switch to another dialog
+    result = utils._change_current_thread(threads, sender_id, new_thread)
+
+    return HttpResponse(json.dumps(result),
+                            content_type="application/json")

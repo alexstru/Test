@@ -12,6 +12,24 @@ import glob
 from django.db.models import get_app, get_models
 
 
+def _change_current_thread(threads, sender_id, new_thread):
+    """
+    Prepares threads for the left-handed panel.
+    """
+    thread_list = []
+
+    for thread in threads:
+        partner = thread.participants.exclude(id=sender_id)[0]
+        thread_list.append({
+                'thread': thread.id,
+                'partner': partner.username,
+                'lastid': thread.lastid,
+        })
+
+    return {'threads': thread_list, 
+            'new_thread': new_thread}
+
+
 def FixBarista(command):
 
     result = 'no command'
