@@ -291,4 +291,47 @@ class TestChatView(TestCase):
         self.assertEqual(jsonresp['text'][0],
                          'This field is required.')
 
+    @mock.patch('webchat.views.time')
+    def test_get_new__non_existant(self, time_patch):
+        resp = self.client.post(reverse('get_new'), {
+            'id': 0,
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content, b'OK')
+        self.assertEqual(resp['Content-Type'], 'text/plain')
+        self.assertTrue(time_patch.sleep.called)
+        self.assertEqual(time_patch.sleep.call_count, 20)
+
+    def test_get_new__new_message(self):
+        self.response = self.client.get(self.url)
+
+        # Select first thread
+        thread = Thread.objects.get(pk=1)
+        partner = thread.participants.exclude(id=self.request.user.id)[0]
+
+        # Create messages for other two threads
+        for i in range(2, 4):
+            Message.objects.create(
+                text = 'text' + str(i),
+                sender = self.request.user,
+                thread = Thread.objects.get(pk=i)
+            )
+
+        resp = self.client.post(reverse('get_new'), {
+            'thread_id': thread.id,
+            'last_id': thread.lastid,
+            'username': self.request.user.username,
+            'receiver': partner.username
+        })
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Content-Type'], 'application/json')
+        jsonresp = json.loads(resp.content.decode())
+        self.assertEqual(jsonresp['lastid'], msg.pk)
+        self.assertEqual(len(jsonresp['messages']), 1)
+        self.assertEqual(jsonresp['messages'][0]['id'], msg.pk)
+        self.assertEqual(jsonresp['messages'][0]['username'], 'testuser')
+        self.assertEqual(jsonresp['messages'][0]['message'], 'testmessage')
+        self.assertTrue('timestamp' in jsonresp['messages'][0])
+
         RemoveTestImages()

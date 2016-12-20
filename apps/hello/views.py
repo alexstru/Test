@@ -16,9 +16,11 @@ from django.views.decorators.csrf import csrf_exempt
 import os
 from django.contrib.auth.models import User
 from django.conf import settings
+import time
 
 
 logger = logging.getLogger(__name__)
+SLEEP_SECONDS = 20
 
 
 def home(request):
@@ -255,6 +257,7 @@ def userchat(request):
                   })
 
 
+@csrf_exempt
 @require_POST
 def send(request):
     """
@@ -272,7 +275,6 @@ def send(request):
 
     sender_id = int(request.POST['sender_id'])
     mode = request.POST['mode']
-    prev_thread_id = request.POST['prev_thread_id']
 
     # Define dialog members
     sender = User.objects.get(id=sender_id)
@@ -304,16 +306,6 @@ def send(request):
     if mode == 'currentDialog':
         return HttpResponse('OK', content_type='text/plain; charset=UTF-8')
 
-    '''
-    If the user doesn't begin first dialog 
-    and just switches to another dialog
-    then is necessary to stop the ongoing dialog
-    '''
-    if prev_thread_id != '0':
-        prev_thread = Thread.objects.get(id=prev_thread_id)
-        prev_thread.stop = True
-        prev_thread.save()
-
     # update QuerySet of threads with current user
     threads = Thread.objects.\
                      filter(participants=sender).\
@@ -324,3 +316,60 @@ def send(request):
 
     return HttpResponse(json.dumps(result),
                             content_type="application/json")
+
+
+@csrf_exempt
+@require_POST
+def get_new(request):
+    """
+    This method is called from the client when it wants to check if there are
+    any new messages since the last message "id".
+
+    The backend is checked every second for SLEEP_SECONDS. If there are no new
+    messages in this interval, "OK" is returned and the client may initiate a
+    new request.
+
+    The result of this method, when new messages are available is json similar
+    to below:
+
+    {
+        messages: [{...}, {...}, ...],
+        lastid: 100
+    }
+
+    "message" contains HTML that can be injected into a textarea.
+     "lastid" is the highest(latest) message ID in the thread.
+    """
+
+    thread_id = int(request.POST['thread_id'])
+    last_id = int(request.POST['last_id'])
+    username = request.POST['username']
+    receiver = request.POST['receiver']
+
+    for _ in range(SLEEP_SECONDS):
+        # Get the thread corresponding to the dialog members
+        thread = Thread.objects.get(id=thread_id)
+
+        # If no messages was found, sleep and try again.
+        if thread.lastid == last_id:
+            time.sleep(1)
+            continue
+
+        # Query the backend for messages since "id".
+        messages = Message.objects.\
+                           filter(thread=thread_id, pk__gt=last_id).\
+                           order_by('pk')
+
+        message_count = messages.count()
+
+        # Never return more than 100 messages at once.
+        if message_count > 100:
+            messages = messages[message_count - 100:]
+
+        # Convert the QuerySet to a dictlist.
+        result = utils._prepear_new_messages(messages)
+        return HttpResponse(json.dumps(result),
+                            content_type="application/json")
+
+    # If there are no new messages in the interval, "OK" is returned
+    return HttpResponse('OK', content_type='text/plain')

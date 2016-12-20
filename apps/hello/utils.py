@@ -30,6 +30,29 @@ def _change_current_thread(threads, sender_id, new_thread):
             'new_thread': new_thread}
 
 
+def _prepear_new_messages(messages):
+    """
+    Converts the messages given, to a dictlist.
+    """
+    messages_dict = []
+
+    # Convert messages to a dict.
+    for message in messages:
+        messages_dict.append({
+            'id': message.pk,
+            'username': message.sender.username,
+            'message': message.text,
+            'timestamp': message.timestamp.isoformat(),
+        })
+
+    result = {
+        'messages': messages_dict,
+        'lastid': max([message.pk for message in messages]),
+    }
+
+    return result
+
+
 def FixBarista(command):
 
     result = 'no command'
