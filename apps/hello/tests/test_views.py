@@ -1,9 +1,10 @@
 from django.test import TestCase, Client, RequestFactory
 from django.core.urlresolvers import reverse
-from apps.hello.models import AboutMe, RequestContent, Thread
+from apps.hello.models import AboutMe, RequestContent, Thread, Message
 import json
 from apps.hello.utils import GetTestImage, RemoveTestImages
 from apps.hello.forms import ProfileUpdateForm
+import mock
 
 NORMAL = {
     'first_name': 'Alex',
@@ -274,7 +275,7 @@ class TestChatView(TestCase):
             'recipient': 'admin'
         })
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(Message.objects.count(), 1)
+        self.assertEqual(Message.objects.count(), 2)
         msg = Message.objects.last()
         self.assertEqual(msg.text, 'testmessage')
         self.assertIsNotNone(msg.timestamp)
@@ -291,10 +292,30 @@ class TestChatView(TestCase):
         self.assertEqual(jsonresp['text'][0],
                          'This field is required.')
 
-    @mock.patch('webchat.views.time')
+    def test_find_threads_info_on_the_page(self):
+        self.assertEqual(Thread.objects.count(), 1)
+        response = self.client.get(self.url)
+        self.assertContains(response, 'Jaroslav (1)', 1, 200)
+
+        thread = Thread.objects.get(pk=1)
+
+        resp = self.client.post('/send/', {
+            'text': 'Test text',
+            'sender_id': 1,
+            'recipient': 'Jaroslav',
+            'mode': 'currentDialog'
+        })
+
+        response = self.client.get(self.url)
+        self.assertContains(response, 'Jaroslav (2)', 1, 200)
+
+    @mock.patch('apps.hello.views.time')
     def test_get_new__non_existant(self, time_patch):
-        resp = self.client.post(reverse('get_new'), {
-            'id': 0,
+        resp = self.client.post('/get_new/', {
+            'thread_id': 1,
+            'username': 'admin',
+            'receiver': 'Jaroslav',
+            'lastid_buffer': 0
         })
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content, b'OK')
@@ -307,21 +328,22 @@ class TestChatView(TestCase):
 
         # Select first thread
         thread = Thread.objects.get(pk=1)
-        partner = thread.participants.exclude(id=self.request.user.id)[0]
 
-        # Create messages for other two threads
-        for i in range(2, 4):
-            Message.objects.create(
-                text = 'text' + str(i),
-                sender = self.request.user,
-                thread = Thread.objects.get(pk=i)
-            )
+        resp = self.client.post('/send/', {
+            'text': 'Test text',
+            'sender_id': 1,
+            'recipient': 'Jaroslav',
+            'mode': 'currentDialog'
+        })
 
-        resp = self.client.post(reverse('get_new'), {
+        msg = Message.objects.last()
+        self.assertEqual(msg.text, 'Test text')
+
+        resp = self.client.post('/get_new/', {
             'thread_id': thread.id,
-            'last_id': thread.lastid,
-            'username': self.request.user.username,
-            'receiver': partner.username
+            'username': 'admin',
+            'receiver': 'Jaroslav',
+            'lastid_buffer': 0
         })
 
         self.assertEqual(resp.status_code, 200)
@@ -330,8 +352,9 @@ class TestChatView(TestCase):
         self.assertEqual(jsonresp['lastid'], msg.pk)
         self.assertEqual(len(jsonresp['messages']), 1)
         self.assertEqual(jsonresp['messages'][0]['id'], msg.pk)
-        self.assertEqual(jsonresp['messages'][0]['username'], 'testuser')
-        self.assertEqual(jsonresp['messages'][0]['message'], 'testmessage')
+        self.assertEqual(jsonresp['messages'][0]['username'],
+                         msg.sender.username)
+        self.assertEqual(jsonresp['messages'][0]['message'], msg.text)
         self.assertTrue('timestamp' in jsonresp['messages'][0])
 
         RemoveTestImages()

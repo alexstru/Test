@@ -19,7 +19,7 @@
 {% block content %}
 
 {% csrf_token %}
-
+ 
       <div class="row spacing2em">
 
         <div class="col-md-2">
@@ -77,6 +77,9 @@
         </div>
 
       </div>
+
+      <span id="service" style="display: hidden;" 
+            data-init_lmid="{{ initLMID }}"></span>
 
 {% endblock content %}
 

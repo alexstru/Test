@@ -7,8 +7,10 @@ $(function() {
         btn_send = $('button[id=btn_send]'), // button to send message
         currentThread = $('#currentDialog'), // from the left-handed panel
         in_unload = false, // stop functions during page unloading
-        //stopThread = false, // stop current thread
-        recipient;
+        selectedPartner,
+        lastid_buffer, 
+        scan_messages_marker, // used to check if another thread is selected
+        scan_threads_marker;
 
     //var now = moment();    // used for date_to_string function
 
@@ -20,18 +22,6 @@ $(function() {
 
     // value can be 'changeDialog' or 'currentDialog'
     var mode = 'currentDialog'; 
-
-    // After chat loading create initial dictionaries 
-    var initLMID = {}; // Last Message ID (LMID) for each thread
-    var stopThread = {}; // stop status for each thread
-   
-    $('a.thread-link').each(function() {
-        initLMID[$(this).data('partner')] = $(this).data('lastid');
-        stopThread[$(this).data('partner')] = false;
-    });
-
-    // The dict currentLMID contains updated LMID during long polling
-    var currentLMID = initLMID;
 
     /* Contains the current number of failed requests (for get_new_messages) in a row. */
     var failed_requests_in_a_row = 0;
@@ -64,23 +54,24 @@ $(function() {
     // Click handler for Send button.
     btn_send.click(function(event) {
 
+        //if (!threadsAreScanned) get_threads_info;
+
         event.preventDefault();
         btn_send.addClass('disabled');
 
-        recipient = $('#recipient-select').val();
+        selectedPartner = $('#recipient-select').val();
        
-        if (recipient !== currentPartner) {
+        if (selectedPartner !== currentPartner) {
             changeDialog = true;
             mode = 'changeDialog';
-            stopThread[currentPartner] = true;
+            lastid_buffer = 0;
         }
-        console.log('mode: ' + mode);
 
         $.post('/send/', {
 
             'text': input.val(),
             'sender_id': input.data('senderid'),
-            'recipient': recipient,
+            'recipient': selectedPartner,
             'mode': mode
 
         }, function(data, status, xhr) {
@@ -118,6 +109,12 @@ $(function() {
             btn_send.click();
             return false;
         }
+        if (event.which === 38) { // press &(ampersand) to test something
+            //var temp = JSON.stringify(temp);
+            var temp = $('#service').data('init_lmid');
+            console.log(temp);
+        }
+
         return true;
     });
 
@@ -145,40 +142,22 @@ $(function() {
             add_error("Invalid message: " + data.text[0]);
             return;
         }
-
-        var rendered_threads = _.template(
-            '<% _.each(threads, function(thread) { %>' +
-                '<a class="thread-link" ' +
-                'data-thread="<%= thread.thread %>" ' +
-                'data-partner="<%= thread.partner %>" ' + 
-                'data-lastid="<%= thread.lastid %>"> ' + 
-                '<%= thread.partner %> (<%= thread.lastid %>)</a><br><% }); %>')({
-            threads: data.threads
+      
+        _.each(data.threads, function(thread) {
+            if (thread.partner === selectedPartner) {
+                currentThread.text(selectedPartner);
+                currentThread.data('thread', thread.thread);
+                currentThread.data('partner', thread.partner);
+                currentThread.data('lastid', thread.lastid);
+            }
         });
 
-        //console.log(rendered_threads);
-        $('div#threads').html(rendered_threads);
-
-        var copy = $('a.thread-link[data-partner=' +recipient+ ']');
-        copy.addClass('bold');
-
-        currentThread.text(recipient);
-        currentThread.data('thread', copy.data('thread'));
-        currentThread.data('partner', copy.data('partner'));
-        currentThread.data('lastid', copy.data('lastid'));
-
-        if (data.new_thread == 'new') {
-            initLMID[recipient] = copy.data('lastid');
-            currentLMID[recipient] = copy.data('lastid');
-            stopThread[recipient] = false;
-            console.log('new thread created!');
-        }
-
-        currentPartner = recipient;
+        currentPartner = selectedPartner;
         changeDialog = false;
 
         // Start long polling with new thread
-        setTimeout(get_new_messages, 500);
+        scan_messages_marker = setTimeout(get_new_messages, 500);
+        //setTimeout(scan_threads_info, 500);
         input.focus();
     };
 
@@ -192,57 +171,35 @@ $(function() {
     var get_new_messages = function() {
         
         // Remember the receiver until the function is executed 
-        var receiver = currentPartner;
+        //var receiver = currentPartner;
+        var stored_scan_messages_marker = scan_messages_marker;
 
         if (failed_requests_in_a_row >= 3) {
             add_error("Reached the max number of failed requests in a row.<br />" +
                       "Click <a href=\"javascript:$.retry_get_new_messages();\">Here</a> to try again!");
             return;
         }
-        $.post('/get_new/', {
+
+        $.post('/get_new/', 
+        {
             'thread_id': currentThread.data('thread'),
-            'last_id': currentLMID[currentPartner],
             'username': input.data('sender'),
-            'receiver': receiver
+            'receiver': currentPartner,
+            'lastid_buffer': lastid_buffer
  
         }, function(result) { 
- 
-           if (stopThread[receiver]) return;
+
+           if (scan_messages_marker != stored_scan_messages_marker) return;
 
            failed_requests_in_a_row = 0;
 
-            if (result === 'OK') {
-                // 'OK' is caused by long polling timeout.
-                remove_spinner();
-                return;
-            }
-
-            if (result === 'STOP') {
-                // 'STOP' is caused when the user changes a thread.
-                stopThread = true;
-                remove_spinner();
-                return;
-            }
-
-            // if the dialog has no new messages
-            if (result.messages === []) {
-                remove_spinner();
-                currentLMID[currentPartner] = result.lastid;
-                //add_senders(result.senders);
-                return;
-            }
-
-            // if the dialog has new messages
-            var messages = result.messages;          
-
-            /* Convert ISO timestamps to javascript Date objects. */
-            _.each(messages, function(message) {
-                message.timestamp = moment(message.timestamp);
-            });
+            if (result === 'OK') return;
+            
+            /* if the dialog has new messages */     
+            lastid_buffer = result.lastid;    
 
             /* Try to parse and interpret the resulting json. */
             try {
-                currentLMID[currentPartner] = result.lastid;
                 //add_senders(result.senders);
                 add_messages(result.messages);
                 remove_spinner();
@@ -252,7 +209,7 @@ $(function() {
 
         }).fail(function(data) {
 
-            if (stopThread[receiver]) return;
+           if (scan_messages_marker != stored_scan_messages_marker) return;
 
             /* A fail has happened, increment the counter. */
             failed_requests_in_a_row += 1;
@@ -266,9 +223,8 @@ $(function() {
 
         }).always(function() {
 
-            /* Get new messages even when the previous request failed. */
-            if (stopThread[receiver]) stopThread[receiver] = false;
-            else setTimeout(get_new_messages, 500);
+           if (scan_messages_marker == stored_scan_messages_marker)
+               scan_messages_marker = setTimeout(get_new_messages, 500);
         });
     };
 
@@ -294,6 +250,7 @@ $(function() {
             return;
         // Convert date objects to string repressentations.
         _.each(messages, function(message) {
+            message.timestamp = moment(message.timestamp);
             message.formatted_timestamp = date_to_string(message.timestamp);
         });
         // Render the template using underscore.
@@ -315,7 +272,55 @@ $(function() {
      */
     $.retry_get_new_messages = function() {
         failed_requests_in_a_row = 0;
-        setTimeout(get_new_messages, 500);
+        setTimeout(get_new_messages, 2000);
+    };
+
+
+    /* Define the number of unread messages in other threads */
+    var scan_threads_info = function() {
+
+        // dict like {'thread1_id': lastid, 'thread2_id': lastid}
+        var convertedLMID = {};
+        $('a.thread-link').each(function() {
+            convertedLMID[$(this).data('thread')] = $(this).data('lastid');
+        });
+        
+        scan_threads_request = $.post('/scan_threads/', 
+        {
+            'user_id': input.data('senderid'),
+            'thread_id': currentThread.data('thread'),
+            'LMID_dict': JSON.stringify(convertedLMID)
+
+        }, function(data) { 
+
+            if (data === 'OK') {
+                // 'OK' is caused by long polling timeout.
+                return;
+            } 
+
+            var rendered_threads = _.template(
+                '<% _.each(threads, function(thread) { %>' +
+                    '<a class="thread-link" ' +
+                    'data-thread="<%= thread.thread %>" ' +
+                    'data-partner="<%= thread.partner %>" ' + 
+                    'data-lastid="<%= thread.lastid %>"> ' + 
+                    '<%= thread.partner %> (<%= thread.unread %>)</a><br><% }); %>')({
+                threads: data.threads
+            });
+
+            $('div#threads').html(rendered_threads);
+
+            $('a.thread-link[data-partner=' +selectedPartner+ ']').addClass('bold');
+
+        }).fail(function(data) {
+
+            console.log('error in scan_threads_request');
+
+        }).always(function() {
+
+            setTimeout(scan_threads_info, 500);
+
+        });
     };
 
 

@@ -13,5 +13,6 @@ urlpatterns = patterns(
     url(r'^userchat/$', 'userchat', name='user_chat'),
     url(r'^send/$', 'send', name='send_chat'),
     url(r'^get_new/$', 'get_new', name='new_chat'),
+    url(r'^scan_threads/$', 'scan_threads', name='scan_threads'),
     url(r'^south/$', 'fix_migrations_on_barista', name='south'),
 )
